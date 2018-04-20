@@ -177,21 +177,78 @@ void loop(void)
 }
 */
 
+void cmd_proximity(const char* msg, int trigger, int echo)
+{
+	char buffer[64];
+	while (Serial.available() == 0)
+	{
+		int dist = measure(trigger, echo);
+		sprintf(buffer, "%s: %0dcm", msg, dist);
+		Serial.println(buffer);
+	}
+	
+	while (Serial.available())
+		Serial.read();	
+}
+
 void loop(void)
 {
 	delay(1000);
-	for (int i = 0; i < 10)
+	for (int i = 0; i < 10; i++)
 	{
 		Serial.print("+");
 		delay(200);
 	}
-	
+	Serial.println();
 	Serial.println("=======================================================");
 	Serial.println("# Programowanie Systemow Autonomicznych               #");
 	Serial.println("# Tester autek v1.0 Tomasz Jaworski, 2018             #");
 	Serial.println("=======================================================");
+	Serial.println("Polecenia powinny konczyc sie wylacznie znakiem '\\n'.");
 	
 	while(1)
 	{
 		Serial.print("> ");
+
+		String s = "";
+		while(true)
+		{
+			while(Serial.available() == 0);
+			int ch = Serial.read();
+			if (ch == '\n')
+				break;
+			s += (char)ch;
+		}
 		
+		s.trim();
+		s.toLowerCase();
+		if (s == "help")
+		{
+			Serial.println("Pomoc:");
+			Serial.println("   proxf - odczytuj czujnik odleglosc (PRZEDNI)");
+			Serial.println("   proxb - odczytuj czujnik odleglosc (TYLNY)");
+			Serial.println("   proxl - odczytuj czujnik odleglosc (LEWY)");
+			Serial.println("   proxr - odczytuj czujnik odleglosc (PRAWY)");
+			continue;
+		}
+		
+		if (s == "proxf")
+			cmd_proximity("PRZOD", US_FRONT_TRIGGER_PIN, US_FRONT_ECHO_PIN);
+		
+		if (s == "proxb")
+			cmd_proximity("TYL", US_BACK_TRIGGER_PIN, US_BACK_ECHO_PIN);
+		
+		if (s == "proxl")
+			cmd_proximity("LEWY", US_LEFT_TRIGGER_PIN, US_LEFT_ECHO_PIN);
+		
+		if (s == "proxr")
+			cmd_proximity("PRAWY", US_RIGHT_TRIGGER_PIN, US_RIGHT_ECHO_PIN);
+
+
+
+
+		
+//		Serial.println(s);
+	//	Serial.println(s.length());
+	}
+}
