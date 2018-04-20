@@ -34,3 +34,18 @@
 //SERVO
 #define SERVO_X 8
 #define SERVO_Y 9
+
+
+//DISTANCE SENSORS
+
+#define TRIG_FRONT
+#define ECHO_FRONT
+
+#define TRIG_BACK
+#define ECHO_BACK
+
+#define TRIG_LEFT
+#define ECHO_LEFT
+
+#define TRIG_RIGHT
+#define ECHO_RIGHT

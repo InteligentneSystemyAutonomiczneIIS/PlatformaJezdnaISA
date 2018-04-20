@@ -27,11 +27,11 @@ void Engine(){
   pinMode(MODE, OUTPUT);      //ustawienie pinu rozdzaju sterowania na output
   digitalWrite(MODE, HIGH);   //ustawienie uproszczonego sterowania ;P
 
-  pinMode(LEFT_ENCODER_0, INPUT);         //uruchomienie enkoderóœ
-  pinMode(RIGHT_ENCODER_0, INPUT);
+  pinMode(LEFT_ENCODER, INPUT);         //uruchomienie enkoderóœ
+  pinMode(RIGHT_ENCODER, INPUT);
 
-  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_0), RightCounter, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_0), LeftCounter, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER), RightCounter, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER), LeftCounter, CHANGE);
 
   MovementDirection(LEFT_FRONT, RIGHT_FRONT);
   MovementSpeed(0);
