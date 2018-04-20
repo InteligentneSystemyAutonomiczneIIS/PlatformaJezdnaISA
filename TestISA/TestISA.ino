@@ -1,5 +1,15 @@
 #include "ISAMobile.h"
 
+enum Side
+{
+	Side_Left,
+	Side_Right
+};
+
+
+
+void SetPowerLevel(int side, int level);
+
 void setup(void)
 {
 	// Czujniki ultradźwiekowe
@@ -10,6 +20,18 @@ void setup(void)
 		
 		digitalWrite(ultrasound_trigger_pin[i], 0);
 	}
+	
+	// Silniki
+	pinMode(A_PHASE, OUTPUT);
+	pinMode(A_ENABLE, OUTPUT);
+	pinMode(B_PHASE, OUTPUT);
+	pinMode(B_ENABLE, OUTPUT);
+	pinMode(MODE, OUTPUT);
+
+	digitalWrite(MODE, true);
+	SetPowerLevel(Side_Left, 0);
+	SetPowerLevel(Side_Right, 0);
+	
 	
 	Serial.begin(9600);
 	Serial.println("Test");
@@ -31,9 +53,10 @@ int measure(int trigger, int echo)
 	int distance = (int)((float)duration * 0.03438f * 0.5f);
 	return distance;
 }
-
+/*
 void loop(void)
 {
+	
 	int dfront = measure(US_FRONT_TRIGGER_PIN, US_FRONT_ECHO_PIN);
 	int dback = measure(US_BACK_TRIGGER_PIN, US_BACK_ECHO_PIN);
 	int dleft = measure(US_LEFT_TRIGGER_PIN, US_LEFT_ECHO_PIN);
@@ -44,4 +67,129 @@ void loop(void)
 		dfront, dback, dleft, dright);
 	Serial.println(buffer);
 }
+*/
 
+void SetPowerLevel(int side, int level)
+{
+	if (side == Side_Left)
+	{
+		if (level > 0)
+		{
+			// do przodu
+			digitalWrite(A_PHASE, 1);
+			analogWrite(B_ENABLE, level);
+		} else if (level < 0)
+		{
+			// do tyłu
+			digitalWrite(A_PHASE, 0);
+			analogWrite(B_ENABLE, 255 - -level);
+		} else
+		{
+			// stop
+			digitalWrite(A_PHASE, 0);
+			analogWrite(B_ENABLE, 255);
+		}
+	}
+	
+	if (side == Side_Right)
+	{
+		if (level > 0)
+		{
+			// do przodu
+			digitalWrite(B_PHASE, 0);
+			analogWrite(A_ENABLE, level);
+		} else if (level < 0)
+		{
+			// do tyłu
+			digitalWrite(B_PHASE, 1);
+			analogWrite(A_ENABLE, 255 - -level);
+		} else
+		{
+			// stop
+			digitalWrite(B_PHASE, 0);
+			analogWrite(A_ENABLE, 0);
+		}
+	}	
+}
+
+
+void loop(void)
+{
+	delay(1000);
+
+	SetPowerLevel(Side_Left, 100);
+	delay(2000);
+
+	SetPowerLevel(Side_Left, 200);
+	delay(2000);
+
+	SetPowerLevel(Side_Left, 255);
+	delay(2000);
+
+
+	SetPowerLevel(Side_Left, 0);
+	SetPowerLevel(Side_Right, 0);
+
+	SetPowerLevel(Side_Left, -100);
+	delay(2000);
+
+	SetPowerLevel(Side_Left, -200);
+	delay(2000);
+
+	SetPowerLevel(Side_Left, -255);
+	delay(2000);
+
+	SetPowerLevel(Side_Left, 0);
+	SetPowerLevel(Side_Right, 0);
+	delay(4000);
+	
+	
+	////	
+	
+	delay(1000);
+
+	SetPowerLevel(Side_Right, 100);
+	delay(2000);
+
+	SetPowerLevel(Side_Right, 200);
+	delay(2000);
+
+	SetPowerLevel(Side_Right, 255);
+	delay(2000);
+
+
+	SetPowerLevel(Side_Right, 0);
+	SetPowerLevel(Side_Right, 0);
+
+	SetPowerLevel(Side_Right, -100);
+	delay(2000);
+
+	SetPowerLevel(Side_Right, -200);
+	delay(2000);
+
+	SetPowerLevel(Side_Right, -255);
+	delay(2000);
+
+	SetPowerLevel(Side_Right, 0);
+	SetPowerLevel(Side_Right, 0);
+	delay(4000);
+	
+		
+	
+	/*
+	int speed = 100;
+	
+	digitalWrite(A_PHASE, 0);
+	digitalWrite(B_PHASE, 0);
+
+	analogWrite(A_ENABLE, 0);
+	analogWrite(B_ENABLE, 0);  
+	
+	delay(1000);
+	
+	analogWrite(A_ENABLE, 0);
+	analogWrite(B_ENABLE, 255);  
+	
+	delay(3000);*/
+	
+}

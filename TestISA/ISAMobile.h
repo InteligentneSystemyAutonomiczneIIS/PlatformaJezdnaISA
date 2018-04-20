@@ -2,9 +2,21 @@
 #define _ISA_MOBILE_H_
 
 /*
- * Czujniki odległości
+ * Silniki, sterowanie PWM
+ * 
  */
+ 
+#define A_ENABLE 2  //PWM
+#define A_PHASE 48  //0 - przod, 1 - tyl DIGITAL
+#define B_ENABLE 3  //PWM
+#define B_PHASE 46  //0 - przod, 1 - tyl DIGITAL
+#define MODE 44     //sterowanie 0 - ciężkie, 1 - uproszczone DIGITAL
 
+ 
+/*
+ * Czujniki odległości
+ * Moduł HC-SR04
+ */
 
 #define US_FRONT				0
 #define US_FRONT_TRIGGER_PIN	8
@@ -37,6 +49,8 @@ int ultrasound_echo_pin[] = {
 	[US_LEFT]	= US_LEFT_ECHO_PIN,
 	[US_RIGHT]	= US_RIGHT_ECHO_PIN,
 };
+
+
 
  
 #endif // _ISA_MOBILE_H_
