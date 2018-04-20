@@ -38,14 +38,14 @@
 
 //DISTANCE SENSORS
 
-#define TRIG_FRONT
-#define ECHO_FRONT
+#define TRIG_FRONT 8
+#define ECHO_FRONT 9
 
-#define TRIG_BACK
-#define ECHO_BACK
+#define TRIG_BACK 10
+#define ECHO_BACK 11
 
-#define TRIG_LEFT
-#define ECHO_LEFT
+#define TRIG_LEFT 6
+#define ECHO_LEFT 7
 
-#define TRIG_RIGHT
-#define ECHO_RIGHT
+#define TRIG_RIGHT 5
+#define ECHO_RIGHT 4
