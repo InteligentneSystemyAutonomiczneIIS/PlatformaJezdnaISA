@@ -112,10 +112,11 @@ void SetPowerLevel(int side, int level)
 	}	
 }
 
-
+/*
 void loop(void)
 {
 	delay(1000);
+
 
 	SetPowerLevel(Side_Left, 100);
 	delay(2000);
@@ -173,23 +174,24 @@ void loop(void)
 	SetPowerLevel(Side_Right, 0);
 	SetPowerLevel(Side_Right, 0);
 	delay(4000);
-	
-		
-	
-	/*
-	int speed = 100;
-	
-	digitalWrite(A_PHASE, 0);
-	digitalWrite(B_PHASE, 0);
-
-	analogWrite(A_ENABLE, 0);
-	analogWrite(B_ENABLE, 0);  
-	
-	delay(1000);
-	
-	analogWrite(A_ENABLE, 0);
-	analogWrite(B_ENABLE, 255);  
-	
-	delay(3000);*/
-	
 }
+*/
+
+void loop(void)
+{
+	delay(1000);
+	for (int i = 0; i < 10)
+	{
+		Serial.print("+");
+		delay(200);
+	}
+	
+	Serial.println("=======================================================");
+	Serial.println("# Programowanie Systemow Autonomicznych               #");
+	Serial.println("# Tester autek v1.0 Tomasz Jaworski, 2018             #");
+	Serial.println("=======================================================");
+	
+	while(1)
+	{
+		Serial.print("> ");
+		
