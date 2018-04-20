@@ -49,3 +49,8 @@
 
 #define TRIG_RIGHT 5
 #define ECHO_RIGHT 4
+
+#define DISTANCE_FRONT  1
+#define DISTANCE_BACK   2
+#define DISTANCE_LEFT   3
+#define DISTANCE_RIGHT  4
