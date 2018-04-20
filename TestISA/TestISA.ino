@@ -2,6 +2,7 @@
 
 void setup(void)
 {
+	// Czujniki ultradźwiekowe
 	for (int i = 0; i < 4; i++)
 	{
 		pinMode(ultrasound_trigger_pin[i], OUTPUT);
@@ -14,9 +15,6 @@ void setup(void)
 	Serial.println("Test");
 }
 
-long duration;
-int distance;
-
 int measure(int trigger, int echo)
 {
 	digitalWrite(trigger, false);
@@ -26,11 +24,12 @@ int measure(int trigger, int echo)
 	delayMicroseconds(10);
 	digitalWrite(trigger, false);
 
-	duration = pulseIn(echo, true);
+	// zmierz czas przelotu fali dźwiękowej
+	int duration = pulseIn(echo, true);
 
-	// us do centrymetrów
-	distance = (int)((float)duration * 0.03438f * 0.5f);
-	
+	// przelicz czas na odległość (1/2 Vsound(t=20st.C))
+	int distance = (int)((float)duration * 0.03438f * 0.5f);
+	return distance;
 }
 
 void loop(void)
