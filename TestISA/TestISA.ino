@@ -209,6 +209,7 @@ void loop(void)
 	Serial.println("# Tester autek v1.0 Tomasz Jaworski, 2018             #");
 	Serial.println("=======================================================");
 	Serial.println("Polecenia powinny konczyc sie wylacznie znakiem '\\n'.");
+	Serial.println("ARDUINO IDE: Zmień 'No line ending' na 'Newline' w dolnej części okna konsoli...\n");
 	
 	while(1)
 	{
@@ -226,6 +227,10 @@ void loop(void)
 		
 		s.trim();
 		s.toLowerCase();
+		Serial.println(s);
+		
+		//
+		
 		if (s == "help")
 		{
 			Serial.println("Pomoc:");
@@ -257,8 +262,8 @@ void loop(void)
 		}
 
 
-		
-//		Serial.println(s);
-	//	Serial.println(s.length());
+		Serial.print(" Polecenie '");
+		Serial.print(s);
+		Serial.print("' jest nieznane; Może 'help'?\n");
 	}
 }
