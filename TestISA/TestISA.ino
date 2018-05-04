@@ -47,7 +47,8 @@ int measure(int trigger, int echo)
 	digitalWrite(trigger, false);
 
 	// zmierz czas przelotu fali dźwiękowej
-	int duration = pulseIn(echo, true);
+	int duration = pulseIn(echo, true, 50 * 1000);
+	
 
 	// przelicz czas na odległość (1/2 Vsound(t=20st.C))
 	int distance = (int)((float)duration * 0.03438f * 0.5f);
