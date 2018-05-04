@@ -177,14 +177,17 @@ void loop(void)
 }
 */
 
-void cmd_proximity(const char* msg, int trigger, int echo)
+void cmd_proximity(const char* msg, int us_sensor)
 {
 	char buffer[64];
 	while (Serial.available() == 0)
 	{
-		int dist = measure(trigger, echo);
-		sprintf(buffer, "%s: %0dcm", msg, dist);
-		Serial.println(buffer);
+		int dist = measure(
+			ultrasound_trigger_pin[us_sensor],
+			ultrasound_echo_pin[us_sensor]);
+			
+		sprintf(buffer, "\n%s: %0dcm", msg, dist);
+		Serial.print(buffer);
 	}
 	
 	while (Serial.available())
@@ -232,19 +235,25 @@ void loop(void)
 			continue;
 		}
 		
-		if (s == "proxf")
-			cmd_proximity("PRZOD", US_FRONT_TRIGGER_PIN, US_FRONT_ECHO_PIN);
+		if (s == "proxf") {
+			cmd_proximity("PRZOD", US_FRONT);
+			continue;
+		}
 		
-		if (s == "proxb")
-			cmd_proximity("TYL", US_BACK_TRIGGER_PIN, US_BACK_ECHO_PIN);
+		if (s == "proxb") {
+			cmd_proximity("TYL", US_BACK);
+			continue;
+		}
 		
-		if (s == "proxl")
-			cmd_proximity("LEWY", US_LEFT_TRIGGER_PIN, US_LEFT_ECHO_PIN);
+		if (s == "proxl") {
+			cmd_proximity("LEWY", US_LEFT);
+			continue;
+		}
 		
-		if (s == "proxr")
-			cmd_proximity("PRAWY", US_RIGHT_TRIGGER_PIN, US_RIGHT_ECHO_PIN);
-
-
+		if (s == "proxr") {
+			cmd_proximity("PRAWY", US_RIGHT);
+			continue;
+		}
 
 
 		
