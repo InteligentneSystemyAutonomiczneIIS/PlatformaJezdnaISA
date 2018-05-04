@@ -13,6 +13,15 @@
 #define B_PHASE 48  //0 - przod, 1 - tyl DIGITAL
 #define MODE 44     //sterowanie 0 - ciężkie, 1 - uproszczone DIGITAL
 
+
+enum class PowerSideEnum
+{
+	Left,
+	Right
+};
+
+
+
  
 /*
  * Czujniki odległości
@@ -35,20 +44,29 @@
 #define US_RIGHT_TRIGGER_PIN	4
 #define US_RIGHT_ECHO_PIN		5
  
+enum class UltraSoundSensor {
+	Front,
+	Back,
+	Left,
+	Right,
+	
+	__first = Front,
+	__last = Right,
+};
  
 int ultrasound_trigger_pin[] = {
-	[US_FRONT] = US_FRONT_TRIGGER_PIN,
-	[US_BACK] = US_BACK_TRIGGER_PIN,
-	[US_LEFT] = US_LEFT_TRIGGER_PIN,
-	[US_RIGHT] = US_RIGHT_TRIGGER_PIN,
+	[UltraSoundSensor::Front]	= US_FRONT_TRIGGER_PIN,
+	[UltraSoundSensor::Back]	= US_BACK_TRIGGER_PIN,
+	[UltraSoundSensor::Left]	= US_LEFT_TRIGGER_PIN,
+	[UltraSoundSensor::Right]	= US_RIGHT_TRIGGER_PIN,
 };
 
  
 int ultrasound_echo_pin[] = {
-	[US_FRONT]	= US_FRONT_ECHO_PIN,
-	[US_BACK]	= US_BACK_ECHO_PIN,
-	[US_LEFT]	= US_LEFT_ECHO_PIN,
-	[US_RIGHT]	= US_RIGHT_ECHO_PIN,
+	[UltraSoundSensor::Front]	= US_FRONT_ECHO_PIN,
+	[UltraSoundSensor::Back]	= US_BACK_ECHO_PIN,
+	[UltraSoundSensor::Left]	= US_LEFT_ECHO_PIN,
+	[UltraSoundSensor::Right]	= US_RIGHT_ECHO_PIN,
 };
 
 

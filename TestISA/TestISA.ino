@@ -1,65 +1,10 @@
 #include "ISAMobile.h"
 
-enum Side
-{
-	Side_Left,
-	Side_Right
-};
-
-
-
-void SetPowerLevel(int side, int level);
-
-void setup(void)
-{
-	// Czujniki ultradźwiekowe
-	for (int i = 0; i < 4; i++)
-	{
-		pinMode(ultrasound_trigger_pin[i], OUTPUT);
-		pinMode(ultrasound_echo_pin[i], INPUT);
-		
-		digitalWrite(ultrasound_trigger_pin[i], 0);
-	}
-	
-	// Silniki
-	pinMode(A_PHASE, OUTPUT);
-	pinMode(A_ENABLE, OUTPUT);
-	pinMode(B_PHASE, OUTPUT);
-	pinMode(B_ENABLE, OUTPUT);
-	pinMode(MODE, OUTPUT);
-
-	digitalWrite(MODE, true);
-	SetPowerLevel(Side_Left, 0);
-	SetPowerLevel(Side_Right, 0);
-	
-	
-	Serial.begin(9600);
-	Serial.println("Test");
-}
-
-int measure(int trigger, int echo)
-{
-	digitalWrite(trigger, false);
-	delayMicroseconds(2);
-
-	digitalWrite(trigger, true);
-	delayMicroseconds(10);
-	digitalWrite(trigger, false);
-
-	// zmierz czas przelotu fali dźwiękowej
-	int duration = pulseIn(echo, true, 50 * 1000);
-	
-
-	// przelicz czas na odległość (1/2 Vsound(t=20st.C))
-	int distance = (int)((float)duration * 0.03438f * 0.5f);
-	return distance;
-}
-
-void SetPowerLevel(int side, int level)
+void SetPowerLevel(PowerSideEnum side, int level)
 {
 	level = constrain(level, -255, 255);
 	
-	if (side == Side_Right) {
+	if (side == PowerSideEnum::Right) {
 		if (level > 0) {
 			// do przodu
 			digitalWrite(A_PHASE, 1);
@@ -75,7 +20,7 @@ void SetPowerLevel(int side, int level)
 		}
 	}
 	
-	if (side == Side_Left) {
+	if (side == PowerSideEnum::Left) {
 		if (level > 0) {
 			// do przodu
 			digitalWrite(B_PHASE, 1);
@@ -90,6 +35,52 @@ void SetPowerLevel(int side, int level)
 			analogWrite(B_ENABLE, 0);
 		}
 	}	
+}
+
+
+void setup(void)
+{
+	// Czujniki ultradźwiekowe
+	for (int i = (int)UltraSoundSensor::__first; i <= (int)UltraSoundSensor::__last; i++)
+	{
+		pinMode(ultrasound_trigger_pin[i], OUTPUT);
+		pinMode(ultrasound_echo_pin[i], INPUT);
+		
+		digitalWrite(ultrasound_trigger_pin[i], 0);
+	}
+	
+	// Silniki
+	pinMode(A_PHASE, OUTPUT);
+	pinMode(A_ENABLE, OUTPUT);
+	pinMode(B_PHASE, OUTPUT);
+	pinMode(B_ENABLE, OUTPUT);
+	pinMode(MODE, OUTPUT);
+
+	digitalWrite(MODE, true);
+	SetPowerLevel(PowerSideEnum::Left, 0);
+	SetPowerLevel(PowerSideEnum::Right, 0);
+	
+	
+	Serial.begin(9600);
+	Serial.print("Test... ");
+}
+
+int measureSoundSpeed(int trigger_pin, int echo_pin)
+{
+	digitalWrite(trigger_pin, false);
+	delayMicroseconds(2);
+
+	digitalWrite(trigger_pin, true);
+	delayMicroseconds(10);
+	digitalWrite(trigger_pin, false);
+
+	// zmierz czas przelotu fali dźwiękowej
+	int duration = pulseIn(echo_pin, true, 50 * 1000);
+	
+
+	// przelicz czas na odległość (1/2 Vsound(t=20st.C))
+	int distance = (int)((float)duration * 0.03438f * 0.5f);
+	return distance;
 }
 
 /*
@@ -157,15 +148,25 @@ void loop(void)
 }
 */
 
-void cmd_proximity(const char* msg, int us_sensor)
+void cmd_proximity(const char* msg, UltraSoundSensor sensor)
 {
 	char buffer[64];
+	int d[5] = {};
+	int sum = 0;
+	int id = 0;
+	
 	while (Serial.available() == 0)
 	{
-		int dist = measure(
-			ultrasound_trigger_pin[us_sensor],
-			ultrasound_echo_pin[us_sensor]);
-			
+		int dist = measureSoundSpeed(
+			ultrasound_trigger_pin[(int)sensor],
+			ultrasound_echo_pin[(int)sensor]);
+
+		// średnia krocząca
+		sum -= d[id];
+		sum += d[id] = dist;
+		id = (id + 1) % 5;
+		dist = sum / 5;
+
 		sprintf(buffer, "\n%s: %0dcm", msg, dist);
 		Serial.print(buffer);
 	}
@@ -179,7 +180,7 @@ void loop(void)
 	delay(1000);
 	for (int i = 0; i < 10; i++)
 	{
-		Serial.print("+");
+		Serial.print((char)(43+2*(i&1)));
 		delay(200);
 	}
 	Serial.println();
@@ -222,26 +223,35 @@ void loop(void)
 			Serial.println("   		S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
 			Serial.println("   		D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
 			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
+			Serial.println("   reset - reset");
 			continue;
 		}
 		
+		if (s == "reset") {
+			Serial.println("Ok.");
+			delay(1000);
+			RSTC->RSTC_MR = 0xA5000F01;
+			RSTC->RSTC_CR = 0xA500000D;
+			while(1);
+		}
+		
 		if (s == "proxf") {
-			cmd_proximity("PRZOD", US_FRONT);
+			cmd_proximity("PRZOD", UltraSoundSensor::Front);
 			continue;
 		}
 		
 		if (s == "proxb") {
-			cmd_proximity("TYL", US_BACK);
+			cmd_proximity("TYL", UltraSoundSensor::Back);
 			continue;
 		}
 		
 		if (s == "proxl") {
-			cmd_proximity("LEWY", US_LEFT);
+			cmd_proximity("LEWY", UltraSoundSensor::Left);
 			continue;
 		}
 		
 		if (s == "proxr") {
-			cmd_proximity("PRAWY", US_RIGHT);
+			cmd_proximity("PRAWY", UltraSoundSensor::Right);
 			continue;
 		}
 
@@ -289,9 +299,9 @@ void loop(void)
 			sprintf(msg, "Ustawienia: L=%d, R=%d, power=%d\n", left, right, power);
 			Serial.print(msg);
 			if (left)
-				SetPowerLevel(Side_Left, power);
+				SetPowerLevel(PowerSideEnum::Left, power);
 			if (right)
-				SetPowerLevel(Side_Right, power);
+				SetPowerLevel(PowerSideEnum::Right, power);
 			
 			continue;
 		}
