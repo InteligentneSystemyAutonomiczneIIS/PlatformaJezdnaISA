@@ -238,6 +238,11 @@ void loop(void)
 			Serial.println("   proxb - odczytuj czujnik odleglosc (TYLNY)");
 			Serial.println("   proxl - odczytuj czujnik odleglosc (LEWY)");
 			Serial.println("   proxr - odczytuj czujnik odleglosc (PRAWY)");
+			
+			Serial.println("   mSD p - ustaw wysterowanie silnika napędowego");
+			Serial.println("   		S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
+			Serial.println("   		D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
+			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
 			continue;
 		}
 		
@@ -261,6 +266,40 @@ void loop(void)
 			continue;
 		}
 
+		if (s.startsWith("m")) {
+			if (s.length() < 3) {
+				Serial.println("Polecenie 'm': bład w poleceniu");
+				continue;
+			}
+			
+			int side = tolower(s[1]);
+			int direction = tolower(s[2]);
+			int power = -1;
+			if (s.indexOf(" ") != -1) {
+				s = s.substring(s.lastIndexOf(" ") + 1);
+				char *endptr = NULL;
+				power = strtol(s.c_str(), &endptr, 10);
+				if (*endptr != '\0') {
+					Serial.println("Polecnie 'm': bład w zapisie wartości wystarowania");
+					continue;
+				}
+			}
+			
+			if (strchr("lrb", side) == NULL) {
+				Serial.println("Polecnie 'm': bład w formacie strony");
+				continue;
+			}
+				
+			if (strchr("fbs", direction) == NULL) {
+				Serial.println("Polecnie 'm': bład w formacie kierunku");
+				continue;
+			}
+			
+			char a[100];
+			sprintf(a, "side=%c, dir=%c, power=%d\n", side, direction, power);
+			Serial.print(a);
+			continue;
+		}
 
 		Serial.print(" Polecenie '");
 		Serial.print(s);
