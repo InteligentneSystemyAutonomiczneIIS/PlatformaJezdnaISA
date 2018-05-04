@@ -31,8 +31,8 @@
 #define US_LEFT_ECHO_PIN		7
 
 #define US_RIGHT				3
-#define US_RIGHT_TRIGGER_PIN	5
-#define US_RIGHT_ECHO_PIN		4
+#define US_RIGHT_TRIGGER_PIN	4
+#define US_RIGHT_ECHO_PIN		5
  
  
 int ultrasound_trigger_pin[] = {
