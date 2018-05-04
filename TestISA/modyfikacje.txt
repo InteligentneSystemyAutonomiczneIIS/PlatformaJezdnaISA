@@ -1,0 +1,11 @@
+Modyfikacje
+
+Autko 1:
+
+Prawy czujnik ultradźwiękowy:
+- Zamiana pinów ECHO z TRIGGER
+	Stary PIN4 to teraz PIN5
+	Stary PIN5 to teraz PIN4
+	
+	Stary PIN44 to teraz PIN48
+	Stery PIN48 to teraz PIN44
