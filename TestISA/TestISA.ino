@@ -68,6 +68,8 @@ void setup(void)
 	Wire.begin();
 	qmc.init();
 	
+	Serial1.begin(9600); // HC06
+
 }
 
 int measureSoundSpeed(int trigger_pin, int echo_pin)
@@ -220,6 +222,40 @@ void cmd_qmc(void)
 }
 
 
+void cmd_bluetooth(void)
+{
+	Serial.println("### HC06: Tryb komunikacji z modułem HC06. Aby wyjść, wpisz \"++++++\"...");
+	Serial.println("### Uwaga! Moduł analizuje czas otrzymywania danych; polecenie musi");
+	Serial.println("###        kończyć się krótką przerwą (ok. 500ms) BEZ znaku nowej linii");
+	Serial.print("\n> ");
+	
+	int plus_counter = 0;
+	while (true) {
+		int b = 0;
+		if (Serial.available()) {
+			
+			b = Serial.read();
+		
+			if (b == '+') {
+				plus_counter++;
+				if (plus_counter >= 6)
+					break; // wyjdź na 6 plusów
+			}
+		
+			Serial1.write(b);	// wyślij do hc06
+			Serial.write(b);	// echo lokalne
+		}
+			
+		if (Serial1.available()) {
+			int b = Serial1.read();
+			Serial.write(b);
+		}
+		
+	}
+	
+	Serial.println("HC06: Koniec.");
+}
+
 void loop(void)
 {
 	delay(1000);
@@ -270,6 +306,7 @@ void loop(void)
 			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
 			Serial.println("   reset - reset");
 			Serial.println("   qmc   - odczytuj pomiary pola magnetycznego w trzech osiach");
+			Serial.println("   bt    - komunikacja z modułem HC06 (Bluetooth)");
 			continue;
 		}
 		
@@ -279,6 +316,11 @@ void loop(void)
 			RSTC->RSTC_MR = 0xA5000F01;
 			RSTC->RSTC_CR = 0xA500000D;
 			while(1);
+		}
+		
+		if (s == "bt") {
+			cmd_bluetooth();
+			continue;
 		}
 		
 		if (s == "proxf") {
