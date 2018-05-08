@@ -1,5 +1,7 @@
 #include "ISAMobile.h"
 
+QMC5883 qmc;
+
 void SetPowerLevel(PowerSideEnum side, int level)
 {
 	level = constrain(level, -255, 255);
@@ -59,10 +61,13 @@ void setup(void)
 	digitalWrite(MODE, true);
 	SetPowerLevel(PowerSideEnum::Left, 0);
 	SetPowerLevel(PowerSideEnum::Right, 0);
-	
-	
+
 	Serial.begin(9600);
 	Serial.print("Test... ");
+	
+	Wire.begin();
+	qmc.init();
+	
 }
 
 int measureSoundSpeed(int trigger_pin, int echo_pin)
@@ -83,7 +88,7 @@ int measureSoundSpeed(int trigger_pin, int echo_pin)
 	return distance;
 }
 
-/*
+#if 0
 void loop(void)
 {
 	delay(1000);
@@ -116,7 +121,7 @@ void loop(void)
 	delay(4000);
 	
 	
-	////	
+		
 	
 	delay(1000);
 
@@ -146,7 +151,25 @@ void loop(void)
 	SetPowerLevel(Side_Right, 0);
 	delay(4000);
 }
-*/
+
+
+void xloop() {
+	
+	qmc.measure();
+	int16_t x = qmc.getX();
+	int16_t y = qmc.getY();
+	int16_t z = qmc.getZ();
+
+	char buf[100];
+	sprintf(buf, "\n %5d %5d %5d", x, y, z);
+	Serial.print(buf);
+	delay(100);
+}
+
+
+
+#endif
+
 
 void cmd_proximity(const char* msg, UltraSoundSensor sensor)
 {
@@ -174,6 +197,28 @@ void cmd_proximity(const char* msg, UltraSoundSensor sensor)
 	while (Serial.available())
 		Serial.read();	
 }
+
+
+void cmd_qmc(void)
+{
+	char buffer[64];
+
+	qmc.reset();
+	while (Serial.available() == 0)
+	{
+		qmc.measure();
+		int16_t x = qmc.getX();
+		int16_t y = qmc.getY();
+		int16_t z = qmc.getZ();
+
+		sprintf(buffer, "\n X=%5d Y=%5d Z=%5d", x, y, z);
+		Serial.print(buffer);
+	}
+	
+	while (Serial.available())
+		Serial.read();	
+}
+
 
 void loop(void)
 {
@@ -224,6 +269,7 @@ void loop(void)
 			Serial.println("   		D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
 			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
 			Serial.println("   reset - reset");
+			Serial.println("   qmc   - odczytuj pomiary pola magnetycznego w trzech osiach");
 			continue;
 		}
 		
@@ -252,6 +298,11 @@ void loop(void)
 		
 		if (s == "proxr") {
 			cmd_proximity("PRAWY", UltraSoundSensor::Right);
+			continue;
+		}
+
+		if (s == "qmc") {
+			cmd_qmc();
 			continue;
 		}
 
