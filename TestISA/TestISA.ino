@@ -304,6 +304,43 @@ void cmd_bluetooth(void)
 	Serial.println("HC06: Koniec.");
 }
 
+
+
+void cmd_serial0(void)
+{
+	Serial.println("### Komunikacja po porcie szeregowym Serial0 Aby wyjść, wpisz \"++++++\"...");
+	Serial.println("### Parametry łacza: 9600bps, 8 bitów danych, brak parzystości, 1 bit stopu (9600,8N1)");
+
+	Serial.print("\n> ");
+	
+	int plus_counter = 0;
+	while (true) {
+		int b = 0;
+		if (Serial.available()) {
+			
+			b = Serial.read();
+		
+			if (b == '+') {
+				plus_counter++;
+				if (plus_counter >= 6)
+					break; // wyjdź na 6 plusów
+			}
+		
+		
+			Serial1.write(b);	// wyślij do urządzenia zewnętrznego (np. raspberry pi)
+			Serial.write(b);	// echo lokalne
+		}
+			
+		if (Serial1.available()) {
+			int b = Serial1.read();
+			Serial.write(b);
+		}
+		
+	}
+	
+	Serial.println("Serial0: Koniec.");
+}
+
 void cmd_encoders(void)
 {
 	pinMode(ENCODER_LEFT, INPUT);
@@ -362,20 +399,21 @@ void loop(void)
 		if (s == "help")
 		{
 			Serial.println("Pomoc:");
-			Serial.println("   proxf - odczytuj czujnik odleglosc (PRZEDNI)");
-			Serial.println("   proxb - odczytuj czujnik odleglosc (TYLNY)");
-			Serial.println("   proxl - odczytuj czujnik odleglosc (LEWY)");
-			Serial.println("   proxr - odczytuj czujnik odleglosc (PRAWY)");
-			Serial.println("   prox  - odczytuj WSZYSTKICH czujniki odległości");
+			Serial.println("  proxf   - odczytuj czujnik odleglosc (PRZEDNI)");
+			Serial.println("  proxb   - odczytuj czujnik odleglosc (TYLNY)");
+			Serial.println("  proxl   - odczytuj czujnik odleglosc (LEWY)");
+			Serial.println("  proxr   - odczytuj czujnik odleglosc (PRAWY)");
+			Serial.println("  prox    - odczytuj WSZYSTKICH czujniki odległości");
 			
-			Serial.println("   mSD p - ustaw wysterowanie silnika napędowego");
-			Serial.println("   		S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
-			Serial.println("   		D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
-			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
-			Serial.println("   enc   - Odczyt wejść enkoderów; wcześniej uruchom silniki");
-			Serial.println("   reset - reset");
-			Serial.println("   qmc   - odczytuj pomiary pola magnetycznego w trzech osiach");
-			Serial.println("   bt    - komunikacja z modułem HC06 (Bluetooth)");
+			Serial.println("  mSD p   - ustaw wysterowanie silnika napędowego");
+			Serial.println("	  S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
+			Serial.println("  	  D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
+			Serial.println("   	  p (wysterowanie): poziom sterowania 0-255");
+			Serial.println("  enc     - Odczyt wejść enkoderów; wcześniej uruchom silniki");
+			Serial.println("  reset   - reset");
+			Serial.println("  qmc     - odczytuj pomiary pola magnetycznego w trzech osiach");
+			Serial.println("  bt      - komunikacja z modułem HC06 (Bluetooth)");
+			Serial.println("  serial0 - komunikacja porcie Serial0 (TX0/RX0, 96008N1)");
 			continue;
 		}
 		
@@ -416,7 +454,6 @@ void loop(void)
 			cmd_proximity(nullptr, UltraSoundSensor::All);
 			continue;
 		}
-
 		
 		if (s == "qmc") {
 			cmd_qmc();
@@ -425,6 +462,11 @@ void loop(void)
 
 		if (s == "enc") {
 			cmd_encoders();
+			continue;
+		}
+
+		if (s == "serial0") {
+			cmd_serial0();
 			continue;
 		}
 
