@@ -180,25 +180,61 @@ void xloop() {
 
 void cmd_proximity(const char* msg, UltraSoundSensor sensor)
 {
-	char buffer[64];
-	int d[5] = {};
-	int sum = 0;
-	int id = 0;
+	if (sensor == UltraSoundSensor::All) {
+
+		char buffer[128];
+			
+		int d[4][5] = {0};
+		int sum[4] = {0};
+		int id[4] = {0};
+		int dist[4] = {0};
+		
+		while (Serial.available() == 0)
+		{
+			for (int sens = (int)UltraSoundSensor::Front; sens <= (int)UltraSoundSensor::Right; sens++) {
+				dist[sens] = measureSoundSpeed(
+					ultrasound_trigger_pin[sens],
+					ultrasound_echo_pin[sens]);
+
+				// średnia krocząca
+				sum[sens] -= d[sens][id[sens]];
+				sum[sens] += d[sens][id[sens]] = dist[sens];
+				id[sens] = (id[sens] + 1) % 5;
+				dist[sens] = sum[sens] / 5;
+
+			}
+			sprintf(buffer, "\nFRONT: %4dcm; BACK: %4dcm; LEFT: %4dcm; RIGHT: %4dcm; ",
+				dist[(int)UltraSoundSensor::Front],
+				dist[(int)UltraSoundSensor::Back],
+				dist[(int)UltraSoundSensor::Left],
+				dist[(int)UltraSoundSensor::Right]);
+			Serial.print(buffer);
+		}
+
 	
-	while (Serial.available() == 0)
-	{
-		int dist = measureSoundSpeed(
-			ultrasound_trigger_pin[(int)sensor],
-			ultrasound_echo_pin[(int)sensor]);
+	} else {
+		
+		char buffer[64];
+		int d[5] = {};
+		int sum = 0;
+		int id = 0;
+		
+		while (Serial.available() == 0)
+		{
+			int dist = measureSoundSpeed(
+				ultrasound_trigger_pin[(int)sensor],
+				ultrasound_echo_pin[(int)sensor]);
 
-		// średnia krocząca
-		sum -= d[id];
-		sum += d[id] = dist;
-		id = (id + 1) % 5;
-		dist = sum / 5;
+			// średnia krocząca
+			sum -= d[id];
+			sum += d[id] = dist;
+			id = (id + 1) % 5;
+			dist = sum / 5;
 
-		sprintf(buffer, "\n%s: %0dcm", msg, dist);
-		Serial.print(buffer);
+			sprintf(buffer, "\n%s: %0dcm", msg, dist);
+			Serial.print(buffer);
+		}
+		
 	}
 	
 	while (Serial.available())
@@ -330,6 +366,7 @@ void loop(void)
 			Serial.println("   proxb - odczytuj czujnik odleglosc (TYLNY)");
 			Serial.println("   proxl - odczytuj czujnik odleglosc (LEWY)");
 			Serial.println("   proxr - odczytuj czujnik odleglosc (PRAWY)");
+			Serial.println("   prox  - odczytuj WSZYSTKICH czujniki odległości");
 			
 			Serial.println("   mSD p - ustaw wysterowanie silnika napędowego");
 			Serial.println("   		S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
@@ -375,6 +412,12 @@ void loop(void)
 			continue;
 		}
 
+		if (s == "prox") {
+			cmd_proximity(nullptr, UltraSoundSensor::All);
+			continue;
+		}
+
+		
 		if (s == "qmc") {
 			cmd_qmc();
 			continue;

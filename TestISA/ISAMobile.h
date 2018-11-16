@@ -54,13 +54,15 @@ enum class PowerSideEnum
 #define US_RIGHT_ECHO_PIN		5
  
 enum class UltraSoundSensor {
-	Front,
-	Back,
-	Left,
-	Right,
+	Front = 0,
+	Back = 1,
+	Left = 2,
+	Right = 3,
 	
 	__first = Front,
 	__last = Right,
+	
+	All,
 };
  
 int ultrasound_trigger_pin[] = {
