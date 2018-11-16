@@ -227,6 +227,8 @@ void cmd_bluetooth(void)
 	Serial.println("### HC06: Tryb komunikacji z modułem HC06. Aby wyjść, wpisz \"++++++\"...");
 	Serial.println("### Uwaga! Moduł analizuje czas otrzymywania danych; polecenie musi");
 	Serial.println("###        kończyć się krótką przerwą (ok. 500ms) BEZ znaku nowej linii");
+	Serial.println("### Dla testów: wyślij AT (dokładnie dwa bajty)");
+	
 	Serial.print("\n> ");
 	
 	int plus_counter = 0;
@@ -242,7 +244,10 @@ void cmd_bluetooth(void)
 					break; // wyjdź na 6 plusów
 			}
 		
-			Serial1.write(b);	// wyślij do hc06
+		
+			if (b != '\n') // HC06 nie lubi znaków nowej linii ;)
+				Serial1.write(b);	// wyślij do hc06
+			
 			Serial.write(b);	// echo lokalne
 		}
 			
