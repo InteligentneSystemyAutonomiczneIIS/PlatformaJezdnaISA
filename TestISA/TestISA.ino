@@ -225,9 +225,11 @@ void cmd_qmc(void)
 void cmd_bluetooth(void)
 {
 	Serial.println("### HC06: Tryb komunikacji z modułem HC06. Aby wyjść, wpisz \"++++++\"...");
-	Serial.println("### Uwaga! Moduł analizuje czas otrzymywania danych; polecenie musi");
-	Serial.println("###        kończyć się krótką przerwą (ok. 500ms) BEZ znaku nowej linii");
-	Serial.println("### Dla testów: wyślij AT (dokładnie dwa bajty)");
+	Serial.println("### Protokół: Moduł analizuje czas otrzymywania danych; polecenie musi");
+	Serial.println("###           kończyć się krótką przerwą (ok. 500ms) BEZ znaku nowej linii");
+	Serial.println("### Testy:    Wyślij AT (dokładnie dwa bajty)");
+	Serial.println("### Klient:   Wykorzystaj apkę androidową (np. Serial Bluetooth Terminal");
+	Serial.println("### Moduł:    Miganie diod oznacza brak sparowanego urządzenia; pin=1234");
 	
 	Serial.print("\n> ");
 	
