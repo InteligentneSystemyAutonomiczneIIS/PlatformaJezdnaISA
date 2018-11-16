@@ -8,14 +8,21 @@
  * 
  */
  
-#define A_ENABLE 2  //PWM
-#define A_PHASE 46  //0 - przod, 1 - tyl DIGITAL
+#define A_ENABLE		2	//PWM
+#define A_PHASE			46  //0 - przod, 1 - tyl DIGITAL
+	
+#define B_ENABLE		3	//PWM
+#define B_PHASE			48	//0 - przod, 1 - tyl DIGITAL
+#define MODE			44	//sterowanie 0 - ciężkie, 1 - uproszczone DIGITAL
+							// Pin MODE sterownika jest na stałe podpięty do +5V (HIGH)
 
-#define B_ENABLE 3  //PWM
-#define B_PHASE 48  //0 - przod, 1 - tyl DIGITAL
-// #define MODE 44     //sterowanie 0 - ciężkie, 1 - uproszczone DIGITAL
-					// Pin MODE sterownika jest na stałe podpięty do +5V (HIGH)
-
+/*
+ * Silniki, wejście enkoderowe
+ *
+ */
+#define ENCODER_LEFT	50	// Enkoder lewej strony
+#define ENCODER_RIGHT	51	// Enkoder prawej strony	
+	
 enum class PowerSideEnum
 {
 	Left,

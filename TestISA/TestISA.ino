@@ -56,12 +56,17 @@ void setup(void)
 	pinMode(A_ENABLE, OUTPUT);
 	pinMode(B_PHASE, OUTPUT);
 	pinMode(B_ENABLE, OUTPUT);
-	pinMode(MODE, OUTPUT);
-
-	digitalWrite(MODE, true);
+	
+	//pinMode(MODE, OUTPUT); -- podłaczone na krótko ze stanem wysokim
+	//digitalWrite(MODE, true);  -- podłaczone na krótko ze stanem wysokim
+	
 	SetPowerLevel(PowerSideEnum::Left, 0);
 	SetPowerLevel(PowerSideEnum::Right, 0);
 
+	// Wejścia enkoderowe
+	pinMode(ENCODER_LEFT, INPUT);
+	pinMode(ENCODER_RIGHT, INPUT);
+	
 	Serial.begin(9600);
 	Serial.print("Test... ");
 	
@@ -263,6 +268,25 @@ void cmd_bluetooth(void)
 	Serial.println("HC06: Koniec.");
 }
 
+void cmd_encoders(void)
+{
+	pinMode(ENCODER_LEFT, INPUT);
+	pinMode(ENCODER_RIGHT, INPUT);
+	
+	char buffer[] = {'\n', 'L', '-','R','-','\x0'}; // 2, 4
+	
+	while (Serial.available() == 0)
+	{
+		buffer[2] = '0' + digitalRead(50);
+		buffer[4] = '0' + digitalRead(51);
+		
+		Serial.print(buffer);
+	}
+	
+	while (Serial.available())
+		Serial.read();	
+}
+
 void loop(void)
 {
 	delay(1000);
@@ -311,6 +335,7 @@ void loop(void)
 			Serial.println("   		S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
 			Serial.println("   		D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
 			Serial.println("   		n (wysterowanie): poziom sterowania 0-255");
+			Serial.println("   enc   - Odczyt wejść enkoderów; wcześniej uruchom silniki");
 			Serial.println("   reset - reset");
 			Serial.println("   qmc   - odczytuj pomiary pola magnetycznego w trzech osiach");
 			Serial.println("   bt    - komunikacja z modułem HC06 (Bluetooth)");
@@ -355,6 +380,12 @@ void loop(void)
 			continue;
 		}
 
+		if (s == "enc") {
+			cmd_encoders();
+			continue;
+		}
+
+		
 		if (s.startsWith("m")) {
 			if (s.length() < 3) {
 				Serial.println("Polecenie 'm': bład w poleceniu");
