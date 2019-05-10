@@ -1,3 +1,10 @@
+/*
+ * Oprogramowanie testowe dla modeli autek
+ * Blok obieralny: Inteligentne Systemy Autonomiczne (ISA)
+ * Politechnika Łódzka, WEEIiA, IIS
+ * Autor: Tomasz Jaworski, 2017-2019
+ */
+
 #ifndef _QMC5883_HPP_
 #define _QMC5883_HPP_
 

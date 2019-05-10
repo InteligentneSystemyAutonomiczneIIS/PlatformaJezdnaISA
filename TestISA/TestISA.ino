@@ -1,3 +1,10 @@
+/*
+ * Oprogramowanie testowe dla modeli autek
+ * Blok obieralny: Inteligentne Systemy Autonomiczne (ISA)
+ * Politechnika Łódzka, WEEIiA, IIS
+ * Autor: Tomasz Jaworski, 2017-2019
+ */
+
 #include "ISAMobile.h"
 
 QMC5883 qmc;

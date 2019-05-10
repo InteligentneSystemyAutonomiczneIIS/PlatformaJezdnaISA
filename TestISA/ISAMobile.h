@@ -4,6 +4,7 @@
  * Politechnika Łódzka, WEEIiA, IIS
  * Autor: Tomasz Jaworski, 2017-2019
  */
+
 #if !defined(_ISA_MOBILE_H_)
 #define _ISA_MOBILE_H_
 
