@@ -1,3 +1,9 @@
+/*
+ * Oprogramowanie testowe dla modeli autek
+ * Blok obieralny: Inteligentne Systemy Autonomiczne (ISA)
+ * Politechnika Łódzka, WEEIiA, IIS
+ * Autor: Tomasz Jaworski, 2017-2019
+ */
 #if !defined(_ISA_MOBILE_H_)
 #define _ISA_MOBILE_H_
 
@@ -17,13 +23,26 @@
 							// Pin MODE sterownika jest na stałe podpięty do +5V (HIGH)
 
 /*
+ * Silnik, sterowanie PWM
+ * L298N (https://botland.com.pl/pl/sterowniki-silnikow-moduly/3164-l298n-dwukanalowy-sterownik-silnikow-modul-12v2a.html)
+ */
+ 
+#define LEFT_PWM		3
+#define LEFT_IN1		47	// in1 (l298n)
+#define LEFT_IN2		46	// in2 (l298n)
+
+#define RIGHT_PWM		2
+#define RIGHT_IN1		45	// in3 (l298n)
+#define RIGHT_IN2		44	// in4 (l298n)
+
+/*
  * Silniki, wejście enkoderowe
  *
  */
 #define ENCODER_LEFT	50	// Enkoder lewej strony
 #define ENCODER_RIGHT	51	// Enkoder prawej strony	
 	
-enum class PowerSideEnum
+enum class EngineSelector
 {
 	Left,
 	Right
