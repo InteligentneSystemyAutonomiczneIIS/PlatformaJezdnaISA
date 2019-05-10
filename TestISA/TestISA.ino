@@ -2,39 +2,45 @@
 
 QMC5883 qmc;
 
-void SetPowerLevel(PowerSideEnum side, int level)
+void SetPowerLevel(EngineSelector side, int level)
 {
 	level = constrain(level, -255, 255);
-	
-	if (side == PowerSideEnum::Right) {
+
+	if (side == EngineSelector::Left) {
 		if (level > 0) {
 			// do przodu
-			digitalWrite(A_PHASE, 1);
-			analogWrite(A_ENABLE, level);
+			digitalWrite(LEFT_IN1, false);
+			digitalWrite(LEFT_IN2, true);
+			analogWrite(LEFT_PWM, level);
 		} else if (level < 0) {
 			// do tyłu
-			digitalWrite(A_PHASE, 0);
-			analogWrite(A_ENABLE, -level);
+			digitalWrite(LEFT_IN1, true);
+			digitalWrite(LEFT_IN2, false);
+			analogWrite(LEFT_PWM, -level);
 		} else {
-			// stop
-			digitalWrite(A_PHASE, 0);
-			analogWrite(A_ENABLE, 0);
+			// stop (soft)
+			digitalWrite(LEFT_IN1, true);
+			digitalWrite(LEFT_IN2, true);
+			analogWrite(LEFT_PWM, 0);
 		}
 	}
 	
-	if (side == PowerSideEnum::Left) {
+	if (side == EngineSelector::Right) {
 		if (level > 0) {
 			// do przodu
-			digitalWrite(B_PHASE, 1);
-			analogWrite(B_ENABLE, level);
+			digitalWrite(RIGHT_IN1, true);
+			digitalWrite(RIGHT_IN2, false);
+			analogWrite(RIGHT_PWM, level);
 		} else if (level < 0) {
 			// do tyłu
-			digitalWrite(B_PHASE, 0);
-			analogWrite(B_ENABLE, -level);
+			digitalWrite(RIGHT_IN1, false);
+			digitalWrite(RIGHT_IN2, true);
+			analogWrite(RIGHT_PWM, -level);
 		} else {
-			// stop
-			digitalWrite(B_PHASE, 0);
-			analogWrite(B_ENABLE, 0);
+			// stop (soft)
+			digitalWrite(RIGHT_IN1, true);
+			digitalWrite(RIGHT_IN2, true);
+			analogWrite(RIGHT_PWM, 0);
 		}
 	}	
 }
@@ -52,16 +58,17 @@ void setup(void)
 	}
 	
 	// Silniki
-	pinMode(A_PHASE, OUTPUT);
-	pinMode(A_ENABLE, OUTPUT);
-	pinMode(B_PHASE, OUTPUT);
-	pinMode(B_ENABLE, OUTPUT);
+	pinMode(LEFT_PWM, OUTPUT);
+	pinMode(LEFT_IN1, OUTPUT);
+	pinMode(LEFT_IN2, OUTPUT);
 	
-	//pinMode(MODE, OUTPUT); -- podłaczone na krótko ze stanem wysokim
-	//digitalWrite(MODE, true);  -- podłaczone na krótko ze stanem wysokim
+	pinMode(RIGHT_PWM, OUTPUT);
+	pinMode(RIGHT_IN1, OUTPUT);
+	pinMode(RIGHT_IN2, OUTPUT);
 	
-	SetPowerLevel(PowerSideEnum::Left, 0);
-	SetPowerLevel(PowerSideEnum::Right, 0);
+	
+	SetPowerLevel(EngineSelector::Left, 0);
+	SetPowerLevel(EngineSelector::Right, 0);
 
 	// Wejścia enkoderowe
 	pinMode(ENCODER_LEFT, INPUT);
@@ -362,6 +369,32 @@ void cmd_encoders(void)
 
 void loop(void)
 {
+/*	
+	pinMode(2, OUTPUT);
+	pinMode(3, OUTPUT);
+	pinMode(44, OUTPUT);
+	pinMode(45, OUTPUT);
+	pinMode(46, OUTPUT);
+	pinMode(47, OUTPUT);
+	
+	analogWrite(2, 0);
+	analogWrite(3, 0);
+	
+	
+	analogWrite(2, 100);
+	digitalWrite(45, HIGH);
+	digitalWrite(44, LOW);
+
+	//analogWrite(3, 100);
+	//digitalWrite(44, HIGH);
+	//digitalWrite(45, LOW);
+
+	
+	while(1);
+	return;
+	*/
+	
+	
 	delay(1000);
 	for (int i = 0; i < 10; i++)
 	{
@@ -369,10 +402,15 @@ void loop(void)
 		delay(200);
 	}
 	Serial.println();
-	Serial.println("=======================================================");
+	Serial.println("#=====================================================#");
 	Serial.println("# Programowanie Systemow Autonomicznych               #");
-	Serial.println("# Tester autek v1.0 Tomasz Jaworski, 2018             #");
-	Serial.println("=======================================================");
+	Serial.println("# Tester autek v1.0 Tomasz Jaworski, 2018-2019        #");
+	Serial.println("#=====================================================#");
+	Serial.print("  Kompilacja: ");
+	Serial.print(__DATE__);
+	Serial.print(", ");
+	Serial.println(__TIME__);
+	
 	Serial.println("Polecenia powinny konczyc sie wylacznie znakiem '\\n'.");
 	Serial.println("ARDUINO IDE: Zmień 'No line ending' na 'Newline' w dolnej części okna konsoli...\n");
 	
@@ -515,9 +553,9 @@ void loop(void)
 			sprintf(msg, "Ustawienia: L=%d, R=%d, power=%d\n", left, right, power);
 			Serial.print(msg);
 			if (left)
-				SetPowerLevel(PowerSideEnum::Left, power);
+				SetPowerLevel(EngineSelector::Left, power);
 			if (right)
-				SetPowerLevel(PowerSideEnum::Right, power);
+				SetPowerLevel(EngineSelector::Right, power);
 			
 			continue;
 		}
