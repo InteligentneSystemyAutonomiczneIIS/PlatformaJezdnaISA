@@ -3,8 +3,6 @@
 
 
 
-
-
 void setup() {
 
     initSerial();
@@ -16,7 +14,6 @@ void setup() {
     delay(500);
 
     Serial.println("Initalization ended");
-
 
 }
 
@@ -30,7 +27,7 @@ void loop()
 	}
 
 
-  	Serial.println();
+ 	Serial.println();
 	Serial.println("#========================================================#");
 	Serial.println("# Inteligentne Systemy Autonomiczne                      #");
 	Serial.println("# Tester autek v2.0 Pawel Kapusta, Tomasz Jaworski, 2019 #");

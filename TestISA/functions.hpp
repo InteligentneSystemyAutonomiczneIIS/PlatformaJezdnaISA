@@ -74,9 +74,9 @@ void MotorR_Move(int level)
 }
 
 
-void SetPowerLevel(EngineSelector side, int level, int speedConstaint = 150)
+void SetPowerLevel(EngineSelector side, int level, int levelConstaint = 150)
 {
-	level = constrain(level, -speedConstaint, speedConstaint);
+	level = constrain(level, -levelConstaint, levelConstaint);
 
 	if (side == EngineSelector::Left) 
   {
@@ -90,7 +90,7 @@ void SetPowerLevel(EngineSelector side, int level, int speedConstaint = 150)
 
 // Servo Control Functions
 
-void calibrateServo(ServoSelector servo, minPosition, maxPosition, centerPosition)
+void calibrateServo(ServoSelector servo, int minPosition, int maxPosition, int centerPosition)
 {
   if (servo == ServoSelector::Yaw)
   {
@@ -118,7 +118,7 @@ void centerServos()
 
 }
 
-void moveServo(ServoSelector servo, position)
+void moveServo(ServoSelector servo, int position)
 {
 
   yawConstraint = constrain(position, yawMin, yawMax);
