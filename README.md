@@ -3,7 +3,6 @@ Hardware:
 
 
 Czujniki odległości: **US-015**
-
 https://botland.com.pl/ultradzwiekowe-czujniki-odleglosci/1420-ultradzwiekowy-czujnik-odleglosci-hc-sr04-2-200cm.html?search_query=HC-SR04&results=18
 
 
