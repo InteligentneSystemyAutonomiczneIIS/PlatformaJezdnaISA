@@ -2,19 +2,27 @@ Hardware:
 ======
 
 
-Czujniki odległości: **HC-SR04**
-
+Czujniki odległości: **US-015**
 https://botland.com.pl/ultradzwiekowe-czujniki-odleglosci/1420-ultradzwiekowy-czujnik-odleglosci-hc-sr04-2-200cm.html?search_query=HC-SR04&results=18
 
-Sterownik silnika: **Pololu DRV8835**
 
-https://botland.com.pl/sterowniki-silnikow-dc/851-pololu-drv8835-dwukanalowy-sterownik-silnikow-11v12a.html?search_query=pololu+2135&results=1
+Czujniki odległości: **Pololu VL53L1X time-of-flight**
+https://botland.com.pl/pl/cyfrowe-czujniki-odleglosci/11842-pololu-vl53l1x-time-of-flight-czujnik-odleglosci-i-swiatla-otoczenia-i2c.html
 
-Kompas: **HMC5883L**/**QMC5883**
 
-https://botland.com.pl/magnetometry/9412-magnetometr-gy-273-3-osiowy-cyfrowy-i2c-33v-5v-hmc5883l-qmc5883.html
+Sterownik silnika: **DRI0041**
+https://www.dfrobot.com/product-1534.html
+https://botland.com.pl/pl/sterowniki-silnikow-dc/7421-dfrobot-dwukanalowy-sterownik-silnikow-dc-27v7a.html
 
-Enkodery magnetyczne: **Dagu RS303 z efektem Halla**
 
-https://botland.com.pl/enkodery/2182-zestaw-enkoderow-magnetycznych-dagu-rs030-6952581600725.html?search_query=enkoder+hall&results=50
+Magnetometr + żyroskop: **Waveshare IMU 10DoF - MPU9255 + BMP280**
+https://botland.com.pl/pl/czujniki-9dof-imu/8298-waveshare-imu-10dof-mpu9255-bmp280-3-osiowy-akcelerometr-zyroskop-i-magnetometr-oraz-barometr.html
+
+
+Enkodery optyczne: **Zestaw enkoderów optycznych Pololu**
+https://botland.com.pl/pl/enkodery/1879-zestaw-enkoderow-optycznych-do-micro-silnikow-pololu-wersja-5v-2szt.html
+
+
+Modu WiFi: **WiFi ESP-01 ESP8266**
+https://botland.com.pl/pl/moduly-wifi/4527-modul-wifi-esp-01-esp8266-black-3-gpio-1mb-pcb-antena.html
 

@@ -5,7 +5,9 @@
 
 #define SCB_AIRCR (*(volatile uint32_t *)0xE000ED0C) // Application Interrupt and Reset Control location
 
-
+//Timing
+// elapsedMillis elapsedTime;
+// elapsedMillis blinkTime;
 
 
 // constants for motor driver
@@ -17,22 +19,24 @@ const uint8_t IN3=27;
 const uint8_t IN4=28;
 const uint8_t ENB=22;
 
-enum direction {
-    dirForward,
-    dirBackwards,
-    dirRotatingLeft,
-    dirRotatingRight
-};
+// enum direction {
+//     dirForward,
+//     dirBackwards,
+//     dirRotatingLeft,
+//     dirRotatingRight
+// };
 
+// direction currentDirection;
 bool isBreaking = false;
-int speed = 100;
-direction currentDirection;
 
 
 //constants for ESP8266
 const uint8_t ESP8266_RST = 29, ESP8266_CH_PD = 30;
 
-//constants for VL53L1X
+
+//Constants for Lidar 
+// VL53L1X distanceSensor;
+
 const uint8_t Lidar_XSHUT = 36;
 enum LidarDistanceMode 
 {
@@ -68,9 +72,6 @@ Servo servoPitch;
 int pitchMin = 45, pitchMax = 135, pitchCenter = 90;
 
 
-//Constants for Lidar 
-// VL53L1X distanceSensor;
 
-//Timing
-elapsedMillis elapsedTime;
-elapsedMillis blinkTime;
+
+
