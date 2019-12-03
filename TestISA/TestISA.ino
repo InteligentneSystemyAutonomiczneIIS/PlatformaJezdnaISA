@@ -166,15 +166,15 @@ void loop()
 			}
 				
 			// przekształcenia
-			bool yaw = (side == 'y' || direction == 'b');
-			bool pitch = (side == 'p' || direction == 'b');
+			bool yaw = (direction == 'y' || direction == 'b');
+			bool pitch = (direction == 'p' || direction == 'b');
 
 			char msg[128];
 			sprintf(msg, "Ustawienia: Y=%d, P=%d, position=%d\n", yaw, pitch, position);
 			Serial.print(msg);
 			if (yaw)
 				moveServo(ServoSelector::Yaw, position);
-			if (right)
+			if (pitch)
 				moveServo(ServoSelector::Pitch, position);
 			continue;
 		}

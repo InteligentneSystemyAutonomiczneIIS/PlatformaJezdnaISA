@@ -80,11 +80,11 @@ void SetPowerLevel(EngineSelector side, int level, int levelConstaint = 150)
 
 	if (side == EngineSelector::Left) 
   {
-		MotorL_Move(level)
+		MotorL_Move(level);
 	}
 	if (side == EngineSelector::Right) 
   {
-		MotorR_Move(level)
+		MotorR_Move(level);
 	}	
 }
 
@@ -110,8 +110,8 @@ void calibrateServo(ServoSelector servo, int minPosition, int maxPosition, int c
 void centerServos()
 {
 
-  m_yawCenter = constrain(yawCenter, yawMin, yawMax);
-  m_pitchCenter = constrain(pitchCenter, pitchMin, pitchMax);
+  int m_yawCenter = constrain(yawCenter, yawMin, yawMax);
+  int m_pitchCenter = constrain(pitchCenter, pitchMin, pitchMax);
 
   servoYaw.write(m_yawCenter);
   servoPitch.write(m_pitchCenter);
@@ -121,16 +121,16 @@ void centerServos()
 void moveServo(ServoSelector servo, int position)
 {
 
-  yawConstraint = constrain(position, yawMin, yawMax);
-  pitchConstrain = constrain(position, pitchMin, pitchMax);
+  int yawConstraint = constrain(position, yawMin, yawMax);
+  int pitchConstrain = constrain(position, pitchMin, pitchMax);
 
   if (servo == ServoSelector::Yaw)
   {
-    servoYaw.write(position);
+    servoYaw.write(yawConstraint);
   }
   if (servo == ServoSelector::Pitch)
   {
-    servoPitch.write(position);
+    servoPitch.write(pitchConstrain);
   }
 
 }
