@@ -14,12 +14,12 @@ private:
     
     uint8_t m_PWMControlPin = -1;
     Servo m_motorPWM;
-    int m_speedConstraintForward = 100;
-    int m_speedConstraintReverse = -100;
+    float m_speedConstraintForward = 1.0f;
+    float m_speedConstraintReverse = -1.0f;
     bool m_isInitialized = false;
 
 
-    int m_currentSetSpeed = 0;
+    float m_currentSetSpeed = 0;
 
     void attachServo()
     {
@@ -27,16 +27,15 @@ private:
         m_motorPWM.writeMicroseconds(TRAXXAS_PWM_MICROSECONDS_ZERO);
     }
 
-    // converts from -100 to 100 range into 0-180 range
-    int convertSpeedToDegrees(int speed)
+    // converts from -1 to 1 range into 0-180 range
+    int convertSpeedToDegrees(float speed)
     {
         // OldRange = (OldMax - OldMin)  
         // NewRange = (NewMax - NewMin)  
         // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
 
         //testing algorithms
-        int deg = int(((speed - (-100)) * (180 - 0)) / (100 - (-100))) + (-100);
-        // int deg2 = map(speed, -100, 100, 0, 180);
+        int deg = int(((speed - (-1.0f)) * (180 - 0)) / (1.0f - (-1.0f)));
         return deg;
     }
 
@@ -48,21 +47,21 @@ public:
 
     }
 
-    Motor(uint8_t pin, int speedConstraintForward = 100, int SpeedConstraintReverse=-100): 
+    Motor(uint8_t pin, int speedConstraintForward = 1.0f, int SpeedConstraintReverse=-1.0f): 
         m_PWMControlPin{pin}, 
-        m_speedConstraintForward{speedConstraintForward}, 
-        m_speedConstraintReverse{SpeedConstraintReverse}
+        m_speedConstraintForward{(int)(speedConstraintForward*100)}, 
+        m_speedConstraintReverse{(int)(SpeedConstraintReverse*100)}
     {
         attachServo();
         m_isInitialized = true;
 
     }
 
-    void Initialize(uint8_t pin, int speedConstraintForward = 100, int SpeedConstraintReverse=-100)
+    void Initialize(uint8_t pin, float speedConstraintForward = 1.0f, float SpeedConstraintReverse=-1.0f)
     {
         m_PWMControlPin = pin;
-        m_speedConstraintForward = speedConstraintForward;
-        m_speedConstraintReverse = SpeedConstraintReverse;
+        m_speedConstraintForward = (int)(speedConstraintForward*100);
+        m_speedConstraintReverse = (int)(SpeedConstraintReverse*100);
         attachServo();
         m_isInitialized = true;
 
@@ -70,8 +69,8 @@ public:
 
     void SetSpeed(int speed)
     {
-        int speedConstrained = (speed < -100) ? -100 : ((speed > 100) ? 100 : speed);
-        //speed = constrain(speed, -100, 100);
+        int speedConstrained = (speed < m_speedConstraintReverse) ? m_speedConstraintReverse : ((speed > m_speedConstraintForward) ? m_speedConstraintForward : speed);
+        //speed = constrain(speed, m_speedConstraintReverse, m_speedConstraintForward);
 
         if (m_isInitialized)
         {
@@ -87,7 +86,7 @@ public:
         if (m_isInitialized)
         {
             m_motorPWM.writeMicroseconds(TRAXXAS_PWM_MICROSECONDS_ZERO);
-            m_currentSetSpeed = 0;
+            m_currentSetSpeed = 0.0f;
         }
     }
 
