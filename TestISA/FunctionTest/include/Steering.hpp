@@ -8,9 +8,10 @@ class Steering
 {
 private:
 
-    // Traxxas XL5 ESC requires signals to be in 1ms (min) to 2ms (max), where 1,5ms is zero
+    // Traxxas servo - 1ms (min) to 2ms (max), where 1,5ms is zero
     int m_minimumPWMSignalLengthInMicroseconds = TRAXXAX_PWM_MICROSECONDS_MIN;
     int m_maximumPWMSignalLengtoInMicroseconds = TRAXXAS_PWM_MICROSECONDS_MAX;
+    int m_zeroPWMSignalInMicroseconds = TRAXXAS_PWM_MICROSECONDS_ZERO;
     
     uint8_t m_PWMControlPin = -1;
     Servo m_steeringPWM;
@@ -19,22 +20,21 @@ private:
     bool m_isInitialized = false;
 
 
-    float m_currentSetSwing = 0;
+    float m_currentSetSwing = 0.0f;
 
     void attachServo()
     {
         m_steeringPWM.attach(m_PWMControlPin, m_minimumPWMSignalLengthInMicroseconds, m_maximumPWMSignalLengtoInMicroseconds);
-        m_steeringPWM.writeMicroseconds(TRAXXAS_PWM_MICROSECONDS_ZERO);
+        m_steeringPWM.writeMicroseconds(m_zeroPWMSignalInMicroseconds);
     }
 
-    // converts from -100 to 100 range into 0-180 range
+    // converts from -1 to 1 range into 0-180 range
     int convertSwingToDegrees(int swing)
     {
         // OldRange = (OldMax - OldMin)  
         // NewRange = (NewMax - NewMin)  
         // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
 
-        //testing algorithms
         int deg = int(((swing - (-1.0f)) * (180 - 0)) / (1.0f - (-1.0f)) );
         return deg;
     }
@@ -62,12 +62,12 @@ public:
 
     }
 
-    void SetSteering(int swing)
+    void SetSteering(float swing)
     {
-        int speedConstrained = (swing < m_SwingConstraintLeft) ? m_SwingConstraintLeft : ((swing > m_SwingConstraintRight) ? m_SwingConstraintRight : swing);
-
         if (m_isInitialized)
         {
+            int speedConstrained = (swing < m_SwingConstraintLeft) ? m_SwingConstraintLeft : ((swing > m_SwingConstraintRight) ? m_SwingConstraintRight : swing);
+
             m_steeringPWM.write(convertSwingToDegrees(swing));
             m_currentSetSwing = speedConstrained;
         }
@@ -79,7 +79,7 @@ public:
     {
         if (m_isInitialized)
         {
-            m_steeringPWM.writeMicroseconds(TRAXXAS_PWM_MICROSECONDS_ZERO);
+            m_steeringPWM.writeMicroseconds(m_zeroPWMSignalInMicroseconds);
             m_currentSetSwing = 0;
         }
     }
