@@ -45,7 +45,7 @@ protected:
     void InitializeWatchdogTimers()
     {   
         m_CommunicationWatchdogTimer = TeensyTimerTool::OneShotTimer(TeensyTimerTool::TCK32);
-        // m_CommunicationWatchdogTimer.begin([this]{this->TimerCallback();});
+        m_CommunicationWatchdogTimer.begin([this]{this->TimerCallback();});
 
     }
 

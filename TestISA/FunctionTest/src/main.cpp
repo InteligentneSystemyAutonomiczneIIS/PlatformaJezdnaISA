@@ -2,6 +2,7 @@
 #include <functions.hpp>
 #include <variables.h>
 #include <Chasis.hpp>
+#include <Blinker.hpp>
 
 void setup() {
   	// put your setup code here, to run once:
