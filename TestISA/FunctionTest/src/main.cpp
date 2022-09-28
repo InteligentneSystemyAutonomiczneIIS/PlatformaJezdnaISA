@@ -96,37 +96,59 @@ void loop() {
 		if (s == "selftest")
 		{
 			Serial.println("Starting self-test.");
+			Serial.println("Testing steering");
+			
 			delay(1000);
-			//TODO: 
+			Serial.println("Max left");
 			traxxas4_tec.SetSteering(-100);
 			delay(400);
+			Serial.println("Half left left");
 			traxxas4_tec.SetSteering(-50);
 			delay(400);
+			Serial.println("Neutral");
 			traxxas4_tec.SetSteering(0);
 			delay(400);
+			Serial.println("Half right");
 			traxxas4_tec.SetSteering(50);
 			delay(400);
+			Serial.println("Max right");
 			traxxas4_tec.SetSteering(100);
 			delay(400);
+			Serial.println("Neutral");
 			traxxas4_tec.SetNeutral();
-
+			
+			Serial.println("Testing motors");
+			delay(1000);
+			Serial.println("Neutral");
 			traxxas4_tec.SetSpeed(0);
 			delay(400);
+			Serial.println("20 \% speed");
 			traxxas4_tec.SetSpeed(20);
 			delay(400);
+			Serial.println("50 \% speed");
 			traxxas4_tec.SetSpeed(50);
 			delay(400);
+			Serial.println("100 \% speed");
 			traxxas4_tec.SetSpeed(100);
 			delay(400);
+			Serial.println("Neutral");
 			traxxas4_tec.SetSpeed(0);
 			delay(400);
+			Serial.println("20 \% reverse");
 			traxxas4_tec.SetSpeed(-20);
 			delay(400);
+			Serial.println("50 \% reverse");
 			traxxas4_tec.SetSpeed(-50);
 			delay(400);
+			Serial.println("100 \% reverse");
 			traxxas4_tec.SetSpeed(-100);
 			delay(400);
+			Serial.println("Neutral");
 			traxxas4_tec.SetNeutral();
+
+			delay(1000);
+			Serial.println("Self-test DONE");
+
 
 		}
 
@@ -221,7 +243,7 @@ void loop() {
 
 			Serial.print(" Command '");
 			Serial.print(s);
-			Serial.print("' is unknown; Maybe try 'help'?\n");
+			Serial.print(" is unknown; Maybe try 'help'?\n");
 
 	}
 
