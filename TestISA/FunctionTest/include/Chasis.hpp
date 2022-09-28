@@ -19,14 +19,17 @@ private:
 public:
     Chasis()
     {
-        motor.Initialize(motorPin,speedPowerLevelConstraintForward, speedPowerLevelConstraintBackward);
-        
-        steering.Initialize(steeringPin, steeringSwingConstraintLeft, steeringSwingConstraintRight);
 
-        InitializeWatchdogTimers();
         
     }
 
+    void Initialize()
+    {
+        motor.Initialize(motorPin,speedPowerLevelConstraintForward, speedPowerLevelConstraintBackward);
+        steering.Initialize(steeringPin, steeringSwingConstraintLeft, steeringSwingConstraintRight);
+
+        InitializeWatchdogTimers();
+    }
 
     void SetSpeed(float speed)
     {

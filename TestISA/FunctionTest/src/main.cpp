@@ -2,17 +2,26 @@
 #include <functions.hpp>
 #include <variables.h>
 #include <Chasis.hpp>
-#include <Blinker.hpp>
+
+Chasis traxxas4_tec;
+
+
 
 void setup() {
   	// put your setup code here, to run once:
-
+	
+	// Initialize Serial communication
     initSerial();
-    // initMotors();
-    // initServos();
-    // initESP826();
+
+
+	//initialize LED
     initLED();
-    // Brake();
+
+	// Initialize Chassis
+	traxxas4_tec.Initialize();
+	//make sure that motors and servos are in neutral position
+	traxxas4_tec.SetSteering(0.0f);
+	traxxas4_tec.SetSpeed(0.0f);
     delay(500);
 
     Serial.println("Initalization ended");
@@ -36,8 +45,8 @@ void setup() {
 	Serial.print(", ");
 	Serial.println(__TIME__);
 	
-	Serial.println("Polecenia powinny konczyc sie wylacznie znakiem '\\n'.");
-	Serial.println("ARDUINO IDE: Zmień 'No line ending' na 'Newline' w dolnej części okna konsoli...\n");
+	Serial.println("Commands must end with character: '\\n'.");
+	Serial.println("ARDUINO IDE: Change 'No line ending' to 'Newline' in the lower portion of console window...\n");
 
 	delay(2000);
 }
@@ -46,7 +55,6 @@ void loop() {
   	// put your main code here, to run repeatedly:
 	while(1)
 		{
-		// int sweepTime = 3000;
 		Serial.print("> ");
 
 			String s = "";
@@ -65,16 +73,20 @@ void loop() {
 
 		if (s == "help")
 			{
-				Serial.println("Pomoc:");
+				Serial.println("Help:");
 				
-				Serial.println("  mSD p   - ustaw wysterowanie silnika napędowego");
-				Serial.println("	  S (strona): 'L'-lewa, 'R'-prawa, 'B'-obie");
-				Serial.println("  	  D (kierunek): 'F'-do przodu, 'B'-do tyłu, 'S'-stop");
-				Serial.println("   	  p (wysterowanie): poziom sterowania 0-255");
-				Serial.println("  enc     - Odczyt wejść enkoderów; wcześniej uruchom silniki");
-				Serial.println("  sS p   - ustaw pozycję serw");
-				Serial.println("	  S (serwo): 'Y'-Yaw, 'P'-pitch, 'B'-oba");
-				Serial.println("   	  p (pozycja): pozycja serwa 0-180");
+				Serial.println("  mD p   - set the motor speed and direction");
+				Serial.println("  	  D (direction): 'F'-forwards, 'R'-reverse, 'S'-stop");
+				Serial.println("   	  p (level/speed): 0-100");
+				// Serial.println("  enc     - Odczyt wejść enkoderów; wcześniej uruchom silniki");
+				
+				Serial.println("  sD p   - set the steering level");
+				Serial.println("  	  D (direction): 'L'-left, 'R'-right");
+				Serial.println("   	  p (level): 0-100");
+				
+				// Serial.println("  sS p   - ustaw pozycję serw");
+				// Serial.println("	  S (serwo): 'Y'-Yaw, 'P'-pitch, 'B'-oba");
+				// Serial.println("   	  p (pozycja): pozycja serwa 0-180");
 				Serial.println("  reset   - reset");
 				continue;
 			}
@@ -87,52 +99,44 @@ void loop() {
 
 		if (s.startsWith("m")) 
 		{
-				if (s.length() < 3) {
-					Serial.println("Polecenie 'm': bład w poleceniu");
+				if (s.length() < 2) {
+					Serial.println("Command 'm': command syntax error");
 					continue;
 				}
 				
-				int side = tolower(s[1]);
-				int direction = tolower(s[2]);
+				int direction = tolower(s[1]);
 				int power = -1;
 				if (s.indexOf(" ") != -1) {
 					s = s.substring(s.lastIndexOf(" ") + 1);
 					char *endptr = NULL;
 					power = strtol(s.c_str(), &endptr, 10);
 					if (*endptr != '\0') {
-						Serial.println("Polecnie 'm': bład w zapisie wartości wystarowania");
+						Serial.println("Command 'm': error in power level syntax");
 						continue;
 					}
 				}
 				
-				if (strchr("lrb", side) == NULL) {
-					Serial.println("Polecnie 'm': bład w formacie strony");
-					continue;
-				}
-					
-				if (strchr("fbs", direction) == NULL) {
-					Serial.println("Polecnie 'm': bład w formacie kierunku");
+				if (strchr("frs", direction) == NULL) {
+					Serial.println("Command 'm': error in direction syntax");
 					continue;
 				}
 				
 				if (direction != 's' && power == -1) {
-					Serial.println("Polecnie 'm': brak podanej wartości wysterowania");
+					Serial.println("Command 'm': no power level set");
 					continue;
 				}
 					
-				// przekształcenia
-				bool left = side == 'l' || side == 'b';
-				bool right = side == 'r' || side == 'b';
+				// int to float for chassis
+
 				power = direction == 's' ? 0 : power;
-				power = direction == 'b' ? -power : power;
+				power = direction == 'r' ? -power : power;
+				power = constrain(power, -100, 100);
+				float powerConverted = float((( (float)power - (-1.0f)) * (100 - (-100))) / (1.0f - (-1.0f)));
 
 				char msg[128];
-				sprintf(msg, "Ustawienia: L=%d, R=%d, power=%d\n", left, right, power);
+				sprintf(msg, "Motor settings: power=%d\n", power);
 				Serial.print(msg);
-				if (left)
-					SetPowerLevel(EngineSelector::Left, power);
-				if (right)
-					SetPowerLevel(EngineSelector::Right, power);
+				traxxas4_tec.SetSpeed(powerConverted);
 				
 				continue;
 			}
@@ -141,52 +145,55 @@ void loop() {
 		if (s.startsWith("s")) 
 		{
 				if (s.length() < 2) {
-					Serial.println("Polecenie 's': bład w poleceniu");
+					Serial.println("Command 's': command syntax error");
 					continue;
 				}
 				
 				int direction = tolower(s[1]);
-				int position = -1000;
+				int level = -1000;
 
 				if (s.indexOf(" ") != -1) {
 					s = s.substring(s.lastIndexOf(" ") + 1);
 					char *endptr = NULL;
-					position = strtol(s.c_str(), &endptr, 10);
+					level = strtol(s.c_str(), &endptr, 10);
 					if (*endptr != '\0') {
-						Serial.println("Polecnie 's': bład w zapisie wartości pozycji serwa");
+						Serial.println("Command 's': servo position syntax error");
 						continue;
 					}
 				}
 				
-				if (strchr("ypb", direction) == NULL) {
-					Serial.println("Polecnie 's': bład w formacie kierunku");
+				if (strchr("", direction) == NULL) {
+					Serial.println("Command 's': direction syntax error");
 					continue;
 				}
 
-				if (position == -1000) {
-					Serial.println("Polecnie 's': brak podanej wartości pozycji serw");
+				if (level == -1000) {
+					Serial.println("Command 's': level not set properly");
 					continue;
 				}
 					
 				// przekształcenia
-				bool yaw = (direction == 'y' || direction == 'b');
-				bool pitch = (direction == 'p' || direction == 'b');
+
+				level = constrain(level, 0, 100);
+				if (direction == 'l')
+				{
+					level*=-1;
+				}
+
+				float levelConverted = float((( (float)level - (-1.0f)) * (100 - (-100))) / (1.0f - (-1.0f)));
 
 				char msg[128];
-				sprintf(msg, "Ustawienia: Y=%d, P=%d, position=%d\n", yaw, pitch, position);
+				sprintf(msg, "Steering servo setting: position/level=%d\n", level);
 				Serial.print(msg);
-				if (yaw)
-					moveServo(ServoSelector::Yaw, position);
-				if (pitch)
-					moveServo(ServoSelector::Pitch, position);
+				traxxas4_tec.SetSteering(levelConverted);
 				continue;
 			}
 
 
 
-			Serial.print(" Polecenie '");
+			Serial.print(" Command '");
 			Serial.print(s);
-			Serial.print("' jest nieznane; Może 'help'?\n");
+			Serial.print("' is unknown; Maybe try 'help'?\n");
 
 	}
 
