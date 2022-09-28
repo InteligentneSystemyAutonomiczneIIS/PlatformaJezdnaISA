@@ -66,13 +66,23 @@ public:
     {
         if (m_isInitialized)
         {
-            int speedConstrained = (speed < m_speedConstraintReverse) ? m_speedConstraintReverse : ((speed > m_speedConstraintForward) ? m_speedConstraintForward : speed);
+            float speedConstrained = (speed < m_speedConstraintReverse) ? m_speedConstraintReverse : ((speed > m_speedConstraintForward) ? m_speedConstraintForward : speed);
             // speed = constrain(speed, m_speedConstraintReverse, m_speedConstraintForward);
 
-            m_motorPWM.write(convertSpeedToDegrees(speed));
+            m_motorPWM.write(convertSpeedToDegrees(speedConstrained));
             m_currentSetSpeed = speedConstrained;
         }
 
+    }
+
+    void SetSpeed(int speed)
+    {
+        if (m_isInitialized)
+        {
+            int speedConstrained = constrain(speed, -100, 100);
+            float speedConverted = ((float)speed - (-100.0f)) * (1.0f - (-1.0f)) / (100.0f - (-100.0f))  + (-1.0f);
+            SetSpeed(speedConverted);
+        }
     }
 
     // Send the "zero" speed signal to motor. Not the same as braking!

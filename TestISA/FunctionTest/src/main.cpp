@@ -20,8 +20,7 @@ void setup() {
 	// Initialize Chassis
 	traxxas4_tec.Initialize();
 	//make sure that motors and servos are in neutral position
-	traxxas4_tec.SetSteering(0.0f);
-	traxxas4_tec.SetSpeed(0.0f);
+	traxxas4_tec.SetNeutral();
     delay(500);
 
     Serial.println("Initalization ended");
@@ -36,7 +35,7 @@ void setup() {
 
  	Serial.println();
 	Serial.println("#========================================================#");
-	Serial.println("# Inteligentne Systemy Autonomiczne                      #");
+	Serial.println("# Inteligentne Systemy Autonomiczne IIS                  #");
 	Serial.println("# Tester platform v3.0 Pawel Kapusta                     #");
 	Serial.println("# original code by Tomasz Jaworski                       #");
 	Serial.println("#========================================================#");
@@ -78,16 +77,13 @@ void loop() {
 				Serial.println("  mD p   - set the motor speed and direction");
 				Serial.println("  	  D (direction): 'F'-forwards, 'R'-reverse, 'S'-stop");
 				Serial.println("   	  p (level/speed): 0-100");
-				// Serial.println("  enc     - Odczyt wejść enkoderów; wcześniej uruchom silniki");
 				
 				Serial.println("  sD p   - set the steering level");
 				Serial.println("  	  D (direction): 'L'-left, 'R'-right");
 				Serial.println("   	  p (level): 0-100");
 				
-				// Serial.println("  sS p   - ustaw pozycję serw");
-				// Serial.println("	  S (serwo): 'Y'-Yaw, 'P'-pitch, 'B'-oba");
-				// Serial.println("   	  p (pozycja): pozycja serwa 0-180");
 				Serial.println("  reset   - reset");
+				Serial.println("  selftest   - perform a full self-test. WARNING - WILL MOVE MOTORS FULL SPEED");
 				continue;
 			}
 
@@ -96,6 +92,43 @@ void loop() {
 				_softRestart();
 				while(1);
 			}
+		
+		if (s == "selftest")
+		{
+			Serial.println("Starting self-test.");
+			delay(1000);
+			//TODO: 
+			traxxas4_tec.SetSteering(-100);
+			delay(400);
+			traxxas4_tec.SetSteering(-50);
+			delay(400);
+			traxxas4_tec.SetSteering(0);
+			delay(400);
+			traxxas4_tec.SetSteering(50);
+			delay(400);
+			traxxas4_tec.SetSteering(100);
+			delay(400);
+			traxxas4_tec.SetNeutral();
+
+			traxxas4_tec.SetSpeed(0);
+			delay(400);
+			traxxas4_tec.SetSpeed(20);
+			delay(400);
+			traxxas4_tec.SetSpeed(50);
+			delay(400);
+			traxxas4_tec.SetSpeed(100);
+			delay(400);
+			traxxas4_tec.SetSpeed(0);
+			delay(400);
+			traxxas4_tec.SetSpeed(-20);
+			delay(400);
+			traxxas4_tec.SetSpeed(-50);
+			delay(400);
+			traxxas4_tec.SetSpeed(-100);
+			delay(400);
+			traxxas4_tec.SetNeutral();
+
+		}
 
 		if (s.startsWith("m")) 
 		{
@@ -105,7 +138,7 @@ void loop() {
 				}
 				
 				int direction = tolower(s[1]);
-				int power = -1;
+				int power = 0;
 				if (s.indexOf(" ") != -1) {
 					s = s.substring(s.lastIndexOf(" ") + 1);
 					char *endptr = NULL;
@@ -115,28 +148,29 @@ void loop() {
 						continue;
 					}
 				}
+				power = constrain(power, 0, 100);
 				
 				if (strchr("frs", direction) == NULL) {
 					Serial.println("Command 'm': error in direction syntax");
 					continue;
 				}
 				
-				if (direction != 's' && power == -1) {
-					Serial.println("Command 'm': no power level set");
+				if (direction != 's' && power == 0) {
+					Serial.println("Command 'm': power level not set properly");
 					continue;
 				}
 					
-				// int to float for chassis
 
-				power = direction == 's' ? 0 : power;
-				power = direction == 'r' ? -power : power;
-				power = constrain(power, -100, 100);
-				float powerConverted = float((( (float)power - (-1.0f)) * (100 - (-100))) / (1.0f - (-1.0f)));
+				if (direction == 'r')
+				{
+					power *= -1;
+				}
+	
 
 				char msg[128];
 				sprintf(msg, "Motor settings: power=%d\n", power);
 				Serial.print(msg);
-				traxxas4_tec.SetSpeed(powerConverted);
+				traxxas4_tec.SetSpeed(power);
 				
 				continue;
 			}
@@ -162,34 +196,28 @@ void loop() {
 					}
 				}
 				
-				if (strchr("", direction) == NULL) {
-					Serial.println("Command 's': direction syntax error");
-					continue;
-				}
-
 				if (level == -1000) {
 					Serial.println("Command 's': level not set properly");
 					continue;
 				}
-					
-				// przekształcenia
-
 				level = constrain(level, 0, 100);
+
+				if (strchr("lr", direction) == NULL) {
+					Serial.println("Command 's': direction syntax error");
+					continue;
+				}
+
 				if (direction == 'l')
 				{
 					level*=-1;
 				}
 
-				float levelConverted = float((( (float)level - (-1.0f)) * (100 - (-100))) / (1.0f - (-1.0f)));
-
 				char msg[128];
 				sprintf(msg, "Steering servo setting: position/level=%d\n", level);
 				Serial.print(msg);
-				traxxas4_tec.SetSteering(levelConverted);
+				traxxas4_tec.SetSteering(level);
 				continue;
 			}
-
-
 
 			Serial.print(" Command '");
 			Serial.print(s);

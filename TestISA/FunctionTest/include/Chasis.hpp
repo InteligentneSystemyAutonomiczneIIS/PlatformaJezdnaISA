@@ -31,13 +31,32 @@ public:
         InitializeWatchdogTimers();
     }
 
+    void SetNeutral()
+    {
+        motor.StopMotor();
+        steering.SetNeutralSwing();
+        ResetWatchdogTimers();
+    }
+
     void SetSpeed(float speed)
     {
         motor.SetSpeed(speed);
         ResetWatchdogTimers();
     }
 
+    void SetSpeed(int speed)
+    {
+        motor.SetSpeed(speed);
+        ResetWatchdogTimers();
+    }
+
     void SetSteering(float swing)
+    {
+        steering.SetSteering(swing);
+        ResetWatchdogTimers();
+    }
+
+    void SetSteering(int swing)
     {
         steering.SetSteering(swing);
         ResetWatchdogTimers();
@@ -56,6 +75,7 @@ protected:
     {
         motor.StopMotor();
         steering.SetNeutralSwing(); 
+        Serial.println("CHASSIS; Watchdog timer callback executed");
     }
 
 
