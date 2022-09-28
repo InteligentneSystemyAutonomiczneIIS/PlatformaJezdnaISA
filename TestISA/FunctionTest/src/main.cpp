@@ -1,9 +1,9 @@
 #include <Arduino.h>
-#include <functions.hpp>
-#include <variables.h>
-#include <Chasis.hpp>
+#include <helper_functions.hpp>
+#include <Chassis.hpp>
 
-Chasis traxxas4_tec;
+// Main chassis definition
+Chassis traxxas4_tec;
 
 
 
@@ -13,8 +13,7 @@ void setup() {
 	// Initialize Serial communication
     initSerial();
 
-
-	//initialize LED
+	//initialize builtin LED
     initLED();
 
 	// Initialize Chassis

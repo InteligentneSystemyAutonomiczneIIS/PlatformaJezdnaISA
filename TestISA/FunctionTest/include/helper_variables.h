@@ -1,6 +1,6 @@
 #pragma once
-#include <elapsedMillis.h>
-#include <Servo.h>
+// #include <elapsedMillis.h>
+// #include <Servo.h>
 #include <Wire.h>
 
 #define SCB_AIRCR (*(volatile uint32_t *)0xE000ED0C) // Application Interrupt and Reset Control location
@@ -11,13 +11,13 @@
 
 
 // constants for motor driver
-const uint8_t IN1=25;
-const uint8_t IN2=26;
-const uint8_t ENA=23;
+// const uint8_t IN1=25;
+// const uint8_t IN2=26;
+// const uint8_t ENA=23;
 
-const uint8_t IN3=27;
-const uint8_t IN4=28;
-const uint8_t ENB=22;
+// const uint8_t IN3=27;
+// const uint8_t IN4=28;
+// const uint8_t ENB=22;
 
 // enum direction {
 //     dirForward,
@@ -27,11 +27,11 @@ const uint8_t ENB=22;
 // };
 
 // direction currentDirection;
-bool isBreaking = false;
+// bool isBreaking = false;
 
 
 //constants for ESP8266
-const uint8_t ESP8266_RST = 29, ESP8266_CH_PD = 30;
+// const uint8_t ESP8266_RST = 29, ESP8266_CH_PD = 30;
 
 
 //Constants for Lidar 
@@ -46,30 +46,30 @@ enum LidarDistanceMode
 };
 
 
-enum class EngineSelector
-{
-	Left,
-	Right
-};
+// enum class EngineSelector
+// {
+// 	Left,
+// 	Right
+// };
 
-enum class ServoSelector{
-    Yaw,
-    Pitch
-};
+// enum class ServoSelector{
+//     Yaw,
+//     Pitch
+// };
 
 
 //constants for debug LED
-const uint8_t led = 13;
-boolean ledState = HIGH;
+const uint8_t LED_BUILTIN_TEENSY = 13;
+// boolean ledState = HIGH;
 
 
 //constants for servos
 //left-right
-Servo servoYaw;
-int yawMin = 45, yawMax = 135, yawCenter = 90;
-//up-down
-Servo servoPitch;
-int pitchMin = 45, pitchMax = 135, pitchCenter = 90;
+// Servo servoYaw;
+// int yawMin = 45, yawMax = 135, yawCenter = 90;
+// //up-down
+// Servo servoPitch;
+// int pitchMin = 45, pitchMax = 135, pitchCenter = 90;
 
 
 

@@ -4,6 +4,12 @@
 #include <chassis_defines.h>
 // #include <math.h>
 
+
+// TODO: 
+// 1. Test braking (how to brake without going into reverse)
+// 2. Test all conversion functions
+// 3. Test all Set functions
+
 class Motor
 {
 private:
@@ -66,8 +72,8 @@ public:
     {
         if (m_isInitialized)
         {
-            float speedConstrained = (speed < m_speedConstraintReverse) ? m_speedConstraintReverse : ((speed > m_speedConstraintForward) ? m_speedConstraintForward : speed);
-            // speed = constrain(speed, m_speedConstraintReverse, m_speedConstraintForward);
+            // float speedConstrained = (speed < m_speedConstraintReverse) ? m_speedConstraintReverse : ((speed > m_speedConstraintForward) ? m_speedConstraintForward : speed);
+            float speedConstrained = constrain(speed, m_speedConstraintReverse, m_speedConstraintForward);
 
             m_motorPWM.write(convertSpeedToDegrees(speedConstrained));
             m_currentSetSpeed = speedConstrained;
@@ -80,7 +86,7 @@ public:
         if (m_isInitialized)
         {
             int speedConstrained = constrain(speed, -100, 100);
-            float speedConverted = ((float)speed - (-100.0f)) * (1.0f - (-1.0f)) / (100.0f - (-100.0f))  + (-1.0f);
+            float speedConverted = ((float)speedConstrained - (-100.0f)) * (1.0f - (-1.0f)) / (100.0f - (-100.0f))  + (-1.0f);
             SetSpeed(speedConverted);
         }
     }

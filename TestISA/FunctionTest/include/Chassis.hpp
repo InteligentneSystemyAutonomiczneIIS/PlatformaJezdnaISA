@@ -5,19 +5,24 @@
 #include "TeensyTimerTool.h"
 #include <chrono>
 
-class Chasis
+// TODO: 
+// 1. Read configuration from a txt file on an SD card
+// 2. Test watchdog timers (communication); try out software vs hardware timers under long computations
+// 
+
+class Chassis
 {
 private:
     Motor motor;
     Steering steering;
     TeensyTimerTool::OneShotTimer m_CommunicationWatchdogTimer;
-    TeensyTimerTool::PeriodicTimer m_watchdogTimer;
+    // TeensyTimerTool::PeriodicTimer m_watchdogTimer;
 
     std::chrono::milliseconds m_maxTimeBetweenCommands{watchdogTimer_maxTimeBetweenCommandsInMiliseconds};
 
 
 public:
-    Chasis()
+    Chassis()
     {
 
         
@@ -25,8 +30,8 @@ public:
 
     void Initialize()
     {
-        motor.Initialize(motorPin,speedPowerLevelConstraintForward, speedPowerLevelConstraintBackward);
-        steering.Initialize(steeringPin, steeringSwingConstraintLeft, steeringSwingConstraintRight);
+        motor.Initialize(motorPin,motorPowerLevelDefaultConstraintForward, motorPowerLevelDefaultConstraintBackward);
+        steering.Initialize(steeringPin, steeringSwingDefaultConstraintLeft, steeringSwingDefaultConstraintRight);
 
         InitializeWatchdogTimers();
     }
@@ -66,12 +71,12 @@ public:
 protected:
     void InitializeWatchdogTimers()
     {   
-        m_CommunicationWatchdogTimer = TeensyTimerTool::OneShotTimer(TeensyTimerTool::TCK32);
-        m_CommunicationWatchdogTimer.begin([this]{this->TimerCallback();});
+        m_CommunicationWatchdogTimer = TeensyTimerTool::OneShotTimer(TeensyTimerTool::TCK32); // Software timer (TCK), read manual
+        m_CommunicationWatchdogTimer.begin([this]{this->CommunicationTimerCallback();});
 
     }
 
-    void TimerCallback()
+    void CommunicationTimerCallback()
     {
         motor.StopMotor();
         steering.SetNeutralSwing(); 
@@ -81,6 +86,7 @@ protected:
 
     void ResetWatchdogTimers()
     {
+        m_CommunicationWatchdogTimer.stop();
         m_CommunicationWatchdogTimer.trigger(this->m_maxTimeBetweenCommands);
     }
 };

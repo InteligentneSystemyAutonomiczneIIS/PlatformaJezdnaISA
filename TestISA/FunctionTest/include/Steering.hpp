@@ -4,6 +4,12 @@
 #include <chassis_defines.h>
 // #include <math.h>
 
+// TODO: 
+// 1. Test steering offset (trim)
+// 1. Test all conversion functions
+// 2. Test all Set functions
+// 
+
 class Steering
 {
 private:
@@ -11,7 +17,7 @@ private:
     // Traxxas servo - 1ms (min) to 2ms (max), where 1,5ms is zero
     int m_minimumPWMSignalLengthInMicroseconds = TRAXXAX_PWM_MICROSECONDS_MIN;
     int m_maximumPWMSignalLengtoInMicroseconds = TRAXXAS_PWM_MICROSECONDS_MAX;
-    int m_zeroPWMSignalInMicroseconds = TRAXXAS_PWM_MICROSECONDS_ZERO;
+    int m_zeroPWMSignalInMicroseconds = min(max(TRAXXAS_PWM_MICROSECONDS_ZERO + steeringServoTrimInMicroseconds, TRAXXAX_PWM_MICROSECONDS_MIN), TRAXXAS_PWM_MICROSECONDS_MAX);
     
     uint8_t m_PWMControlPin = -1;
     Servo m_steeringPWM;
@@ -66,9 +72,10 @@ public:
     {
         if (m_isInitialized)
         {
-            int swingConstrained = (swing < m_SwingConstraintLeft) ? m_SwingConstraintLeft : ((swing > m_SwingConstraintRight) ? m_SwingConstraintRight : swing);
+            // float swingConstrained = (swing < m_SwingConstraintLeft) ? m_SwingConstraintLeft : ((swing > m_SwingConstraintRight) ? m_SwingConstraintRight : swing);
+            float swingConstrained = constrain(swing, m_SwingConstraintLeft, m_SwingConstraintRight );
 
-            m_steeringPWM.write(convertSwingToDegrees(swing));
+            m_steeringPWM.write(convertSwingToDegrees(swingConstrained));
             m_currentSetSwing = swingConstrained;
         }
 
@@ -79,7 +86,7 @@ public:
         if (m_isInitialized)
         {
             int swingConstrained = constrain(swing, -100, 100);
-            float swingConverted =((float)swing - (-100.0f)) * (1.0f - (-1.0f)) / (100.0f - (-100.0f))  + (-1.0f);
+            float swingConverted = ((float)swingConstrained - (-100.0f)) * (1.0f - (-1.0f)) / (100.0f - (-100.0f))  + (-1.0f);
             SetSteering(swingConverted);
             
         }
@@ -92,7 +99,7 @@ public:
         if (m_isInitialized)
         {
             m_steeringPWM.writeMicroseconds(m_zeroPWMSignalInMicroseconds);
-            m_currentSetSwing = 0;
+            m_currentSetSwing = 0.0f;
         }
     }
 
