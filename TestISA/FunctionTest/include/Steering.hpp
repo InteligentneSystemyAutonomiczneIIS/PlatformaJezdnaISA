@@ -35,7 +35,7 @@ private:
     }
 
     // converts from -1 to 1 range into 0-180 range
-    int convertSwingToDegrees(int swing)
+    int convertSwingToDegrees(float swing)
     {
         // OldRange = (OldMax - OldMin)  
         // NewRange = (NewMax - NewMin)  
