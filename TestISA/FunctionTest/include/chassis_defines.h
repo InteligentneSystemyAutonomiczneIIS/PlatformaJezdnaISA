@@ -6,7 +6,7 @@
 const int TRAXXAX_PWM_MICROSECONDS_MIN = 1000;
 const int TRAXXAS_PWM_MICROSECONDS_MAX = 2000;
 const int TRAXXAS_PWM_MICROSECONDS_ZERO = 1500;
-const int steeringServoTrimInMicroseconds = 0;
+const int steeringServoTrimInMicroseconds = 200;
 
 
 const int watchdogTimer_maxTimeBetweenCommandsInMiliseconds = 500;

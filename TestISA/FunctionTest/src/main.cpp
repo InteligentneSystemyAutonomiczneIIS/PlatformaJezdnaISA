@@ -100,21 +100,22 @@ void loop() {
 			delay(1000);
 			Serial.println("Max left");
 			traxxas4_tec.SetSteering(-100);
-			delay(400);
+			delay(2000);
 			Serial.println("Half left left");
 			traxxas4_tec.SetSteering(-50);
-			delay(400);
+			delay(2000);
 			Serial.println("Neutral");
 			traxxas4_tec.SetSteering(0);
-			delay(400);
+			delay(2000);
 			Serial.println("Half right");
 			traxxas4_tec.SetSteering(50);
-			delay(400);
+			delay(2000);
 			Serial.println("Max right");
 			traxxas4_tec.SetSteering(100);
-			delay(400);
+			delay(2000);
 			Serial.println("Neutral");
 			traxxas4_tec.SetNeutral();
+			delay(1000);
 			
 			Serial.println("Testing motors");
 			delay(1000);
