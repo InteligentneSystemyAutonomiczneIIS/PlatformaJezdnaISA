@@ -86,7 +86,7 @@ protected:
 
     void ResetWatchdogTimers()
     {
-        m_CommunicationWatchdogTimer.stop();
+        // m_CommunicationWatchdogTimer.stop();
         m_CommunicationWatchdogTimer.trigger(this->m_maxTimeBetweenCommands);
     }
 };

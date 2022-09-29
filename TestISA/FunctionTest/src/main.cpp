@@ -120,33 +120,34 @@ void loop() {
 			delay(1000);
 			Serial.println("Neutral");
 			traxxas4_tec.SetSpeed(0);
-			delay(400);
+			delay(2000);
 			Serial.println("20 \% speed");
 			traxxas4_tec.SetSpeed(20);
-			delay(400);
+			delay(2000);
 			Serial.println("50 \% speed");
 			traxxas4_tec.SetSpeed(50);
-			delay(400);
+			delay(2000);
 			Serial.println("100 \% speed");
 			traxxas4_tec.SetSpeed(100);
-			delay(400);
+			delay(2000);
 			Serial.println("Neutral");
 			traxxas4_tec.SetSpeed(0);
-			delay(400);
+			delay(2000);
 			Serial.println("20 \% reverse");
 			traxxas4_tec.SetSpeed(-20);
-			delay(400);
+			delay(2000);
 			Serial.println("50 \% reverse");
 			traxxas4_tec.SetSpeed(-50);
-			delay(400);
+			delay(2000);
 			Serial.println("100 \% reverse");
 			traxxas4_tec.SetSpeed(-100);
-			delay(400);
+			delay(2000);
 			Serial.println("Neutral");
 			traxxas4_tec.SetNeutral();
 
 			delay(1000);
 			Serial.println("Self-test DONE");
+			continue;
 
 
 		}
