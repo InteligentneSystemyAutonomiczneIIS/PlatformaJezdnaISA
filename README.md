@@ -21,9 +21,9 @@ GPS: **DFRobot GPS Module with Enclosure TEL0094**
 - https://www.dfrobot.com/product-1302.html
 - https://wiki.dfrobot.com/GPS_Module_With_Enclosure__SKU_TEL0094_
 
-IMU (Akcelerometr + żyroskop): **DFRobot Serial 6-Axis Accelerometer SEN0386**
-- https://www.dfrobot.com/product-2200.html
-- https://wiki.dfrobot.com/Serial_6_Axis_Accelerometer_SKU_SEN0386
+IMU (Akcelerometr + żyroskop): **IMU 10DoF - MPU9255 + BMP280 - Waveshare 12476**
+- https://www.waveshare.com/product/10-DOF-IMU-Sensor-C.htm
+- https://www.waveshare.com/wiki/10_DOF_IMU_Sensor_(C)
 
 ## Elementy zespołu wizyjnego
 
